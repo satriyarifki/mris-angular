@@ -1,0 +1,70 @@
+<div class="flex flex-col">
+  <div class="overflow-x-auto">
+    <div class="p-1.5 min-w-full inline-block align-middle">
+      <div class="overflow-hidden">
+        <table
+          *ngFor="let day of dayInAWeek"
+          class="my-3 min-w-full divide-y divide-gray-400"
+        >
+          <thead>
+            <tr>
+              <th
+                scope="col"
+                class="px-4 py-3 text-left text-xs font-medium text-gray-200 bg-gray-600 uppercase w-1/6"
+              >
+                {{ day }}
+              </th>
+              <th
+                *ngFor="let hour of hours"
+                scope="col"
+                class="text-left text-xs font-medium text-gray-500 border uppercase"
+                colspan="2"
+              >
+                {{ hour }}.00
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-400">
+            <tr *ngFor="let room of roomName" class="hover:bg-gray-100">
+              <td
+                class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-800"
+              >
+                {{ room }}
+              </td>
+              <ng-container *ngFor="let item of changeHourArray(day, room, hourHalf); let i = index">
+                <td
+                  
+                  (click)="
+                    this.filterBookedWithHour(day, room, item).length != 0
+                      ? button(this.filterBookedWithHour(day, room, item)[0].id)
+                      : false
+                  "
+                  [ngClass]="
+                    day ==
+                      this.filterBookedWithHour(day, room, item)[0]?.date &&
+                    room ==
+                      this.filterBookedWithHour(day, room, item)[0]?.room &&
+                    item == this.filterBookedWithHour(day, room, item)[0]?.start
+                      ? 'bg-blue-300 cursor-pointer hover:bg-blue-400 transition-colors'
+                      : ''
+                  "
+                  [attr.colspan]="
+                    day ==
+                      this.filterBookedWithHour(day, room, item)[0]?.date &&
+                    room ==
+                      this.filterBookedWithHour(day, room, item)[0]?.room &&
+                    item == this.filterBookedWithHour(day, room, item)[0]?.start
+                      ? this.filterBookedWithHour(day, room, item)[0]
+                          .longHours * 2
+                      : 1
+                  "
+                  class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 border-2 border-gray-300"
+                ></td>
+              </ng-container>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

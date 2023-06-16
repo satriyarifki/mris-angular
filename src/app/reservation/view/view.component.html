@@ -1,0 +1,121 @@
+<div class="relative w-full p-4 overflow-hidden bg-white shadow-lg rounded-xl mx-auto space-y-1 my-3 md:w-4/5 ">
+    <div class="flex items-center justify-between w-full mb-6">
+        <p class="text-xl font-medium text-gray-800 ">
+            View Reservation ID
+        </p>
+        <!-- <button class="flex items-center text-gray-800 border-0 hover:text-black focus:outline-none">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1600 736v192q0 40-28 68t-68 28h-416v416q0 40-28 68t-68 28h-192q-40 0-68-28t-28-68v-416h-416q-40 0-68-28t-28-68v-192q0-40 28-68t68-28h416v-416q0-40 28-68t68-28h192q40 0 68 28t28 68v416h416q40 0 68 28t28 68z">
+                </path>
+            </svg>
+        </button> -->
+    </div>
+    <div class="flex flex-wrap space-x-3">
+        <div class="w-1/4 flex items-center justify-between p-3  bg-green-100 rounded">
+            <h1 class="font-medium">User</h1>
+        </div>
+        <div class="grow flex items-center justify-between p-3  bg-green-100 rounded">
+            <h1 class="">{{ filterReservationById(idResv)[0].user }}</h1>
+        </div>
+    </div>
+    <div class="flex flex-wrap space-x-3">
+        <div class="w-1/4 flex items-center justify-between p-3  bg-purple-100 rounded">
+            <h1 class="font-medium">Resources</h1>
+        </div>
+        <div class="grow flex items-center justify-between p-3  bg-purple-100 rounded">
+            <h1 class="">{{ filterReservationById(idResv)[0].resources }}</h1>
+        </div>
+    </div>
+    <div class="flex flex-wrap space-x-3">
+        <div class="w-1/4 flex items-center justify-between p-3  bg-yellow-100 rounded">
+            <h1 class="font-medium">Accessories</h1>
+        </div>
+        <div class="grow flex items-center justify-between p-3  bg-yellow-100 rounded">
+            <h1 class="">{{ filterReservationById(idResv)[0].accessories }}</h1>
+        </div>
+    </div>
+    <br>
+    <div class="flex flex-wrap space-x-3">
+        <div class="w-1/4 flex items-center justify-between p-3  bg-cyan-100 rounded">
+            <h1 class="font-medium">Begin</h1>
+        </div>
+        <div class="grow flex items-center justify-between p-3  bg-cyan-100 rounded">
+            <h1 class="">{{ filterReservationById(idResv)[0].begin }}</h1>
+        </div>
+    </div>
+    <div class="flex flex-wrap space-x-3">
+        <div class="w-1/4 flex items-center justify-between p-3  bg-cyan-100 rounded">
+            <h1 class="font-medium">End</h1>
+        </div>
+        <div class="grow flex items-center justify-between p-3  bg-cyan-100 rounded">
+            <h1 class="">{{ filterReservationById(idResv)[0].end }}</h1>
+        </div>
+    </div>
+    <div class="flex flex-wrap space-x-3">
+        <div class="w-1/4 flex items-center justify-between p-3  bg-cyan-100 rounded">
+            <h1 class="font-medium">Reservation Length</h1>
+        </div>
+        <div class="grow flex items-center justify-between p-3  bg-cyan-100 rounded">
+            <h1 class="">{{ filterReservationById(idResv)[0].reservLength }}</h1>
+        </div>
+    </div>
+    <div class="flex flex-wrap space-x-3">
+        <div class="w-1/4 flex items-center justify-between p-3  bg-cyan-100 rounded">
+            <h1 class="font-medium">Repeat</h1>
+        </div>
+        <div class="grow flex items-center justify-between p-3  bg-cyan-100 rounded">
+            <h1 class="">{{ filterReservationById(idResv)[0].repeat }}</h1>
+        </div>
+    </div>
+    <br>
+    <div class="flex flex-wrap space-x-3">
+        <div class="w-1/4 flex items-center justify-between p-3  bg-cyan-100 rounded">
+            <h1 class="font-medium">Tittle</h1>
+        </div>
+        <div class="grow flex items-center justify-between p-3  bg-cyan-100 rounded">
+            <h1 class="">{{ filterReservationById(idResv)[0].title }}</h1>
+        </div>
+    </div>
+    <div class="flex flex-wrap space-x-3">
+        <div class="w-1/4 flex items-center justify-between p-3  bg-cyan-100 rounded">
+            <h1 class="font-medium">Description</h1>
+        </div>
+        <div class="grow flex items-center justify-between p-3  bg-cyan-100 rounded">
+            <h1 class="">{{ filterReservationById(idResv)[0].desc }}</h1>
+        </div>
+    </div>
+
+    
+    <!-- <div class="flex items-center justify-between p-3  bg-purple-100 rounded">
+        <span class="p-2 bg-white rounded-lg">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1596 380q28 28 48 76t20 88v1152q0 40-28 68t-68 28h-1344q-40 0-68-28t-28-68v-1600q0-40 28-68t68-28h896q40 0 88 20t76 48zm-444-244v376h376q-10-29-22-41l-313-313q-12-12-41-22zm384 1528v-1024h-416q-40 0-68-28t-28-68v-416h-768v1536h1280zm-128-448v320h-1024v-192l192-192 128 128 384-384zm-832-192q-80 0-136-56t-56-136 56-136 136-56 136 56 56 136-56 136-136 56z">
+                </path>
+            </svg>
+        </span>
+        <div class="flex items-center justify-between w-full ml-2">
+            <p>
+                Launch of Itachi
+            </p>
+            <p>
+                22.07
+            </p>
+        </div>
+    </div>
+    <div class="flex items-center justify-between p-3  bg-yellow-100 rounded">
+        <span class="p-2 bg-white rounded-lg">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+                <path d="M960 256q0-26-19-45t-45-19-45 19-19 45 19 45 45 19 45-19 19-45zm832 928v352q0 22-20 30-8 2-12 2-12 0-23-9l-93-93q-119 143-318.5 226.5t-429.5 83.5-429.5-83.5-318.5-226.5l-93 93q-9 9-23 9-4 0-12-2-20-8-20-30v-352q0-14 9-23t23-9h352q22 0 30 20 8 19-7 35l-100 100q67 91 189.5 153.5t271.5 82.5v-647h-192q-26 0-45-19t-19-45v-128q0-26 19-45t45-19h192v-163q-58-34-93-92.5t-35-128.5q0-106 75-181t181-75 181 75 75 181q0 70-35 128.5t-93 92.5v163h192q26 0 45 19t19 45v128q0 26-19 45t-45 19h-192v647q149-20 271.5-82.5t189.5-153.5l-100-100q-15-16-7-35 8-20 30-20h352q14 0 23 9t9 23z">
+                </path>
+            </svg>
+        </span>
+        <div class="flex items-center justify-between w-full ml-2">
+            <p>
+                Helfest tickets
+            </p>
+            <p>
+                22.07
+            </p>
+        </div>
+    </div> -->
+</div>
