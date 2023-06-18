@@ -171,19 +171,15 @@ export class ScheduleComponent {
 
     if (data.length != 0) {
       data.forEach((element) => {
-        hour.splice(hour.indexOf(element.start)+1, (element.longHours * 2) - 1);
+        hour.splice(hour.indexOf(element.start) + 1, element.longHours * 2 - 1);
 
         // console.log(element);
         // console.log(hour.indexOf(element.start)+1);
-        
-        // console.log(hour);
-        
-      });
-      
-    }
-    return hour
 
-    
+        // console.log(hour);
+      });
+    }
+    return hour;
   }
   filterBooked(date: any, room: any) {
     return this.booked.filter(
@@ -196,8 +192,12 @@ export class ScheduleComponent {
         data.date == date && data.room == room && data.start == start
     );
   }
-  button(id:any) {
-    console.log('Click Success');
-    this.router.navigate(['/view-reservation/', id])
+  button(id: any) {
+    this.router.navigate(['/view-reservation/', id]);
+  }
+  buttonCreate() {
+    console.log('create');
+
+    this.router.navigate(['/create-reservation']);
   }
 }

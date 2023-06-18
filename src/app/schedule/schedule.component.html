@@ -37,7 +37,7 @@
                   (click)="
                     this.filterBookedWithHour(day, room, item).length != 0
                       ? button(this.filterBookedWithHour(day, room, item)[0].id)
-                      : false
+                      : buttonCreate()
                   "
                   [ngClass]="
                     day ==
