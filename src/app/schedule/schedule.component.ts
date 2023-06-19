@@ -1,6 +1,7 @@
 import { IfStmt } from '@angular/compiler';
-import { Component } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
+import { format, isYesterday, nextDay, previousDay, previousSunday, nextSaturday } from 'date-fns'
 
 const hour = [
   '07',
@@ -58,49 +59,43 @@ const roomName = [
   'Rumah Belajar',
   'Credible (Logistik)',
 ];
-
-const dayInAWeek = [
-  'Sunday 16/06/2023',
-  'Monday 17/06/2023',
-  'Tuesday 18/06/2023',
-  'Wednesday 19/06/2023',
-  'Thursday 20/06/2023',
-  'Friday 21/06/2023',
-  'Saturday 22/06/2023',
-];
-
 const booked = [
   {
     id: 1,
-    date: 'Wednesday 19/06/2023',
+    dayName: 'Wednesday',
+    date: '06/14/2023',
     start: '08',
     room: 'For The Future (Floor 1st VIP)',
     longHours: 3,
   },
   {
     id: 2,
-    date: 'Wednesday 19/06/2023',
+    dayName: 'Wednesday',
+    date: '06/14/2023',
     start: '14',
     room: 'For The Future (Floor 1st VIP)',
     longHours: 2,
   },
   {
     id: 3,
-    date: 'Wednesday 19/06/2023',
+    dayName: 'Wednesday',
+    date: '06/14/2023',
     start: '16',
     room: 'For The Future (Floor 1st VIP)',
     longHours: 2,
   },
   {
     id: 4,
-    date: 'Wednesday 19/06/2023',
+    dayName: 'Wednesday',
+    date: '06/14/2023',
     start: '13',
     room: 'Passion (2nd Floor Small)',
     longHours: 4,
   },
   {
     id: 5,
-    date: 'Monday 17/06/2023',
+    dayName: 'Monday',
+    date: '06/19/2023',
     start: '08',
     room: 'Rumah Belajar',
     longHours: 2,
@@ -112,20 +107,44 @@ const booked = [
   templateUrl: './schedule.component.html',
   styleUrls: ['./schedule.component.css'],
 })
-export class ScheduleComponent {
+export class ScheduleComponent implements OnChanges {
+  
   hours = hour;
   hourHalf = hourHalf;
   roomName = roomName;
-  dayInAWeek = dayInAWeek;
   booked = booked;
+
+  // Variable Date
+  @Input() inputDate = format(new Date(), 'P');
+  currentDate: any;
+  
+  arrayDateinWeek: any[] = [];
+
+  // Variable
   total: number = 0;
+  
+  
 
   constructor(private router: Router) {
     // console.log(this.filterBooked);
     let f = globalThis.age;
     f = 14;
     console.log(hourHalf);
+    console.log(this.getFirstDayOfWeek(new Date()));
+    console.log(this.getLastDayOfWeek(new Date()));
+    this.loopWeekDate(new Date())
+    console.log(this.arrayDateinWeek);
+    
+    
   }
+  ngOnInit(){
+    // this.inputDate = format(new Date(), 'P');
+  }
+  ngOnChanges(changes: SimpleChanges) {
+    console.log(changes);
+    
+  }
+  
 
   ColspanLength(date: any, room: any) {
     let data = this.filterBooked(date, room);
@@ -186,11 +205,74 @@ export class ScheduleComponent {
       (data: any) => data.date == date && data.room == room
     );
   }
-  filterBookedWithHour(date: any, room: any, start: any) {
+  filterBookedWithHour(day: any,date: any, room: any, start: any) {
     return this.booked.filter(
       (data: any) =>
-        data.date == date && data.room == room && data.start == start
+        data.date == date && data.room == room && data.start == start && data.dayName == day
     );
+  }
+
+  loopWeekDate(date: any) {
+    var firstDay = date;
+    firstDay = this.getFirstDayOfWeek(date);
+    var lastDay = this.getLastDayOfWeek(date)
+    this.arrayDateinWeek.length = 0;
+    if (date.getDay() == 0) {
+      firstDay = date
+    } else if (date.getDay() == 6){
+      lastDay == date
+    }
+    
+
+    while (firstDay <= lastDay) {
+      this.arrayDateinWeek.push({
+        date: firstDay.getDate(),
+        year: firstDay.getFullYear(),
+        month: firstDay.getMonth(),
+        dayName: firstDay.toLocaleString('en-us', {weekday:'long'}),
+        full: format(firstDay, 'P'),
+        localeString : format(firstDay, 'yyyy-MM-dd'),
+      });
+      
+      firstDay.setDate(firstDay.getDate() + 1);
+    }
+    console.log(this.arrayDateinWeek);
+    
+    
+  }
+  getFirstDayOfWeek(d: any) {
+    // 👇️ clone date object, so we don't mutate it
+    const date = new Date(d);
+    const day = date.getDay(); // 👉️ get day of week
+
+    // 👇️ day of month - day of week (-6 if Sunday), otherwise +1
+    const diff = date.getDate() - day + (day === 0 ? -6 : 0);
+    // console.log(d);
+
+    return new Date(date.setDate(diff));
+  }
+  getLastDayOfWeek(d: any) {
+    // 👇️ clone date object, so we don't mutate it
+
+    const date = new Date(d);
+    const day = date.getDay(); // 👉️ get day of week
+
+    // 👇️ day of month - day of week (-6 if Sunday), otherwise +1
+    const diff = date.getDate() - day + (day == 0 ? 0 : 6);
+
+    return new Date(date.setDate(diff));
+  }
+  nextWeek() {
+    console.log('next');
+    console.log(nextDay(new Date(this.arrayDateinWeek[6].full),0) );
+    
+    this.loopWeekDate(nextDay(new Date(this.arrayDateinWeek[6].full),1));
+  }
+  previousWeek() {
+    console.log('prev');
+    console.log(previousDay(new Date(this.arrayDateinWeek[0].full),0));
+
+    this.loopWeekDate(previousDay(new Date(this.arrayDateinWeek[0].full),1));
   }
   button(id: any) {
     this.router.navigate(['/view-reservation/', id]);

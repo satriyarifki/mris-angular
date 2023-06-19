@@ -7,6 +7,7 @@ import { ScheduleComponent } from './schedule/schedule.component';
 import { NavbarComponent } from './layouts/navbar/navbar.component';
 import { ViewComponent } from './reservation/view/view.component';
 import { CreateComponent } from './reservation/create/create.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -14,13 +15,10 @@ import { CreateComponent } from './reservation/create/create.component';
     ScheduleComponent,
     NavbarComponent,
     ViewComponent,
-    CreateComponent
+    CreateComponent,
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule
-  ],
+  imports: [BrowserModule, AppRoutingModule, FormsModule],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
