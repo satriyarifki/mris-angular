@@ -7,7 +7,11 @@ import { ScheduleComponent } from './schedule/schedule.component';
 import { NavbarComponent } from './layouts/navbar/navbar.component';
 import { ViewComponent } from './reservation/view/view.component';
 import { CreateComponent } from './reservation/create/create.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { LoginComponent } from './auth/login/login.component';
+
+// import { MatFormFieldModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -16,8 +20,15 @@ import { FormsModule } from '@angular/forms';
     NavbarComponent,
     ViewComponent,
     CreateComponent,
+    LoginComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, FormsModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    BrowserAnimationsModule,
+    ReactiveFormsModule
+  ],
   providers: [],
   bootstrap: [AppComponent],
 })

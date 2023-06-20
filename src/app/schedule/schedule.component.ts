@@ -107,7 +107,7 @@ const booked = [
   templateUrl: './schedule.component.html',
   styleUrls: ['./schedule.component.css'],
 })
-export class ScheduleComponent implements OnChanges {
+export class ScheduleComponent {
   
   hours = hour;
   hourHalf = hourHalf;
@@ -122,6 +122,7 @@ export class ScheduleComponent implements OnChanges {
 
   // Variable
   total: number = 0;
+  dateNow = new Date();
   
   
 
@@ -140,12 +141,11 @@ export class ScheduleComponent implements OnChanges {
   ngOnInit(){
     // this.inputDate = format(new Date(), 'P');
   }
-  ngOnChanges(changes: SimpleChanges) {
-    console.log(changes);
+  sendTheNewValue(event:any){
+    // console.log(event.srcElement.valueAsDate);
+    this.loopWeekDate(event.srcElement.valueAsDate)
     
   }
-  
-
   ColspanLength(date: any, room: any) {
     let data = this.filterBooked(date, room);
     let minHour = 0;
@@ -213,15 +213,23 @@ export class ScheduleComponent implements OnChanges {
   }
 
   loopWeekDate(date: any) {
+    this.arrayDateinWeek.length = 0;
     var firstDay = date;
     firstDay = this.getFirstDayOfWeek(date);
-    var lastDay = this.getLastDayOfWeek(date)
-    this.arrayDateinWeek.length = 0;
+    var lastDay = this.getLastDayOfWeek(date);
     if (date.getDay() == 0) {
+      
       firstDay = date
+      lastDay = nextSaturday(firstDay)
+      console.log('first');
+      
     } else if (date.getDay() == 6){
       lastDay == date
+      console.log('last');
     }
+    console.log('first: ' + firstDay);
+    console.log('last: ' + lastDay);
+    
     
 
     while (firstDay <= lastDay) {

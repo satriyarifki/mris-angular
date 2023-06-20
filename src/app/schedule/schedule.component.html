@@ -1,13 +1,9 @@
 <div class="flex flex-col">
   <div class="overflow-x-auto">
     <div class="p-1.5 min-w-full inline-block align-middle">
-      <div class="w-full flex justify-center ">
-        <div class="relative max-w-sm pt-5">
-          <input
-            type="date"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            
-          /> {{inputDate}}
+      <div class="w-full flex justify-center pt-5">
+        <div class="relative max-w-sm  border rounded-md">
+          <input type="date" (input)="sendTheNewValue($event)" class="py-3 px-4 w-full border-gray-400 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500">
         </div>
       </div>
       <div
@@ -108,7 +104,7 @@
                   "
                   [ngClass]="
                     day.full ==
-                      !this.filterBookedWithHour(
+                      this.filterBookedWithHour(
                         day.dayName,
                         day.full,
                         room,
