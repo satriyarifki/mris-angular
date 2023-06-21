@@ -10,6 +10,7 @@ import { CreateComponent } from './reservation/create/create.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginComponent } from './auth/login/login.component';
+import { HttpClientModule } from '@angular/common/http';
 
 // import { MatFormFieldModule } from '@angular/material/input';
 
@@ -27,7 +28,8 @@ import { LoginComponent } from './auth/login/login.component';
     AppRoutingModule,
     FormsModule,
     BrowserAnimationsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

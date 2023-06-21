@@ -2,8 +2,12 @@
   <div class="overflow-x-auto">
     <div class="p-1.5 min-w-full inline-block align-middle">
       <div class="w-full flex justify-center pt-5">
-        <div class="relative max-w-sm  border rounded-md">
-          <input type="date" (input)="sendTheNewValue($event)" class="py-3 px-4 w-full border-gray-400 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500">
+        <div class="relative max-w-sm border rounded-md">
+          <input
+            type="date"
+            (input)="sendTheNewValue($event)"
+            class="py-3 px-4 w-full border-gray-400 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500"
+          />
         </div>
       </div>
       <div
@@ -76,15 +80,15 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-300">
-            <tr *ngFor="let room of roomName" class="hover:bg-gray-100">
+            <tr *ngFor="let room of resourcesApi" class="hover:bg-gray-100">
               <td
-                class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-800"
+                class="p-2 whitespace-nowrap text-sm font-medium text-gray-800"
               >
-                {{ room }}
+                {{ room.roomName }}
               </td>
               <ng-container
                 *ngFor="
-                  let item of changeHourArray(day.full, room, hourHalf);
+                  let item of changeHourArray(day.full, room.id, hourHalf);
                   let i = index
                 "
               >
@@ -103,62 +107,41 @@
                       : buttonCreate()
                   "
                   [ngClass]="
-                    day.full ==
-                      this.filterBookedWithHour(
-                        day.dayName,
-                        day.full,
-                        room,
-                        item
-                      )[0]?.date &&
-                    room ==
-                      this.filterBookedWithHour(
-                        day.dayName,
-                        day.full,
-                        room,
-                        item
-                      )[0]?.room &&
-                    item ==
-                      this.filterBookedWithHour(
-                        day.dayName,
-                        day.full,
-                        room,
-                        item
-                      )[0]?.start
+                    this.filterBookedWithHour(
+                      day.dayName,
+                      day.full,
+                      room.id,
+                      item
+                    ).length != 0
                       ? 'bg-blue-300 cursor-pointer hover:bg-blue-400 transition-colors'
                       : 'hover:bg-blue-100'
                   "
                   [attr.colspan]="
-                    day.full ==
-                      this.filterBookedWithHour(
-                        day.dayName,
-                        day.full,
-                        room,
-                        item
-                      )[0]?.date &&
-                    room ==
-                      this.filterBookedWithHour(
-                        day.dayName,
-                        day.full,
-                        room,
-                        item
-                      )[0]?.room &&
-                    item ==
-                      this.filterBookedWithHour(
-                        day.dayName,
-                        day.full,
-                        room,
-                        item
-                      )[0]?.start
+                    this.filterBookedWithHour(
+                      day.dayName,
+                      day.full,
+                      room.id,
+                      item
+                    ).length != 0
                       ? this.filterBookedWithHour(
                           day.dayName,
                           day.full,
-                          room,
+                          room.id,
                           item
-                        )[0].longHours * 2
+                        )[0].length * 2
                       : 1
                   "
-                  class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 border-2 border-gray-200"
-                ></td>
+                  class="px-1 whitespace-nowrap text-sm text-gray-800 border-2 border-gray-200"
+                >
+                  {{
+                    this.filterBookedWithHour(
+                      day.dayName,
+                      day.full,
+                      room.id,
+                      item
+                    )[0]?.title
+                  }}
+                </td>
               </ng-container>
             </tr>
           </tbody>

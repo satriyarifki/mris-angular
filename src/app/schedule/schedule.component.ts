@@ -1,7 +1,17 @@
 import { IfStmt } from '@angular/compiler';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
-import { format, isYesterday, nextDay, previousDay, previousSunday, nextSaturday } from 'date-fns'
+import {
+  format,
+  isYesterday,
+  nextDay,
+  previousDay,
+  previousSunday,
+  nextSaturday,
+  parseISO,
+} from 'date-fns';
+import { forkJoin } from 'rxjs';
+import { ApiService } from '../services/api.service';
 
 const hour = [
   '07',
@@ -108,7 +118,6 @@ const booked = [
   styleUrls: ['./schedule.component.css'],
 })
 export class ScheduleComponent {
-  
   hours = hour;
   hourHalf = hourHalf;
   roomName = roomName;
@@ -117,86 +126,102 @@ export class ScheduleComponent {
   // Variable Date
   @Input() inputDate = format(new Date(), 'P');
   currentDate: any;
-  
+
   arrayDateinWeek: any[] = [];
+  reservApi: any[] = [];
+  resourcesApi: any[] = [];
 
   // Variable
   total: number = 0;
   dateNow = new Date();
-  
-  
 
-  constructor(private router: Router) {
-    // console.log(this.filterBooked);
-    let f = globalThis.age;
-    f = 14;
-    console.log(hourHalf);
-    console.log(this.getFirstDayOfWeek(new Date()));
-    console.log(this.getLastDayOfWeek(new Date()));
-    this.loopWeekDate(new Date())
-    console.log(this.arrayDateinWeek);
-    
-    
+  constructor(private router: Router, private apiService: ApiService) {
+    console.log();
+    forkJoin(apiService.reservGet(), apiService.resourcesGet()).subscribe(
+      ([reserv, resources]) => {
+        this.reservApi = reserv;
+        this.resourcesApi = resources;
+        console.log(format(new Date(this.reservApi[1].begin), 'HH:mm'));
+        console.log(
+          this.filterBookedWithHour('Wednesday', '06/21/2023', 2, '13:00')[0].title
+        );
+      }
+    );
+
+    this.loopWeekDate(new Date());
   }
-  ngOnInit(){
+  ngOnInit() {
     // this.inputDate = format(new Date(), 'P');
   }
-  sendTheNewValue(event:any){
+  sendTheNewValue(event: any) {
     // console.log(event.srcElement.valueAsDate);
-    this.loopWeekDate(event.srcElement.valueAsDate)
-    
+    this.loopWeekDate(event.srcElement.valueAsDate);
   }
   ColspanLength(date: any, room: any) {
-    let data = this.filterBooked(date, room);
+    let data = this.filterReserv(date, room);
     let minHour = 0;
+    // data.forEach((element) => {
+    //   minHour += element.longHours;
+    //   // console.log(minHour);
+    // });
     data.forEach((element) => {
-      minHour += element.longHours;
+      minHour += element.length;
       // console.log(minHour);
     });
     return 28 - minHour * 2;
   }
   changeHourArray(date: any, room: any, hours: any) {
-    let data = this.filterBooked(date, room);
+    let data = this.filterReserv(date, room);
+    // console.log(date + ' ' + room);
+
+    // console.log(data);
+
     let hour = [
-      '07',
+      '07:00',
       '07:30',
-      '08',
+      '08:00',
       '08:30',
-      '09',
+      '09:00',
       '09:30',
-      '10',
+      '10:00',
       '10:30',
-      '11',
+      '11:00',
       '11:30',
-      '12',
+      '12:00',
       '12:30',
-      '13',
+      '13:00',
       '13:30',
-      '14',
+      '14:00',
       '14:30',
-      '15',
+      '15:00',
       '15:30',
-      '16',
+      '16:00',
       '16:30',
-      '17',
+      '17:00',
       '17:30',
-      '18',
+      '18:00',
       '18:30',
-      '19',
+      '19:00',
       '19:30',
-      '20',
+      '20:00',
       '20:30',
     ];
 
     if (data.length != 0) {
+      // data.forEach((element) => {
+      //   hour.splice(hour.indexOf(element.start) + 1, element.longHours * 2 - 1);
+      // });
       data.forEach((element) => {
-        hour.splice(hour.indexOf(element.start) + 1, element.longHours * 2 - 1);
+        // console.log(new Date(element.begin).toLocaleString());
 
-        // console.log(element);
-        // console.log(hour.indexOf(element.start)+1);
-
-        // console.log(hour);
+        hour.splice(
+          hour.indexOf(String(format(new Date(element.begin), 'HH:mm'))) + 1,
+          element?.length * 2 - 1
+        );
+        // console.log(new Date(element.begin).getHours());
       });
+
+      // console.log(hour);
     }
     return hour;
   }
@@ -205,10 +230,27 @@ export class ScheduleComponent {
       (data: any) => data.date == date && data.room == room
     );
   }
-  filterBookedWithHour(day: any,date: any, room: any, start: any) {
-    return this.booked.filter(
+  filterReserv(date: any, room: any) {
+    return this.reservApi.filter(
       (data: any) =>
-        data.date == date && data.room == room && data.start == start && data.dayName == day
+        format(new Date(data.end), 'P') == date &&
+        data.resourceId == room
+    );
+  }
+  filterBookedWithHour(day: any, date: any, room: any, start: any) {
+    // return this.booked.filter(
+    //   (data: any) =>
+    //     data.date == date &&
+    //     data.room == room &&
+    //     data.start == start &&
+    //     data.dayName == day
+    // );
+
+    return this.reservApi.filter(
+      (data: any) =>
+        format(new Date(data.end), 'P') == date &&
+        data.resourceId == room &&
+        format(new Date(data.begin), 'HH:mm') == start
     );
   }
 
@@ -218,35 +260,25 @@ export class ScheduleComponent {
     firstDay = this.getFirstDayOfWeek(date);
     var lastDay = this.getLastDayOfWeek(date);
     if (date.getDay() == 0) {
-      
-      firstDay = date
-      lastDay = nextSaturday(firstDay)
-      console.log('first');
-      
-    } else if (date.getDay() == 6){
-      lastDay == date
-      console.log('last');
+      firstDay = date;
+      lastDay = nextSaturday(firstDay);
+    } else if (date.getDay() == 6) {
+      lastDay == date;
     }
-    console.log('first: ' + firstDay);
-    console.log('last: ' + lastDay);
-    
-    
 
     while (firstDay <= lastDay) {
       this.arrayDateinWeek.push({
         date: firstDay.getDate(),
         year: firstDay.getFullYear(),
         month: firstDay.getMonth(),
-        dayName: firstDay.toLocaleString('en-us', {weekday:'long'}),
+        dayName: firstDay.toLocaleString('en-us', { weekday: 'long' }),
         full: format(firstDay, 'P'),
-        localeString : format(firstDay, 'yyyy-MM-dd'),
+        localeString: format(firstDay, 'yyyy-MM-dd'),
       });
-      
+
       firstDay.setDate(firstDay.getDate() + 1);
     }
-    console.log(this.arrayDateinWeek);
-    
-    
+    // console.log(this.arrayDateinWeek);
   }
   getFirstDayOfWeek(d: any) {
     // 👇️ clone date object, so we don't mutate it
@@ -271,16 +303,16 @@ export class ScheduleComponent {
     return new Date(date.setDate(diff));
   }
   nextWeek() {
-    console.log('next');
-    console.log(nextDay(new Date(this.arrayDateinWeek[6].full),0) );
-    
-    this.loopWeekDate(nextDay(new Date(this.arrayDateinWeek[6].full),1));
+    // console.log('next');
+    // console.log(nextDay(new Date(this.arrayDateinWeek[6].full),0) );
+
+    this.loopWeekDate(nextDay(new Date(this.arrayDateinWeek[6].full), 1));
   }
   previousWeek() {
-    console.log('prev');
-    console.log(previousDay(new Date(this.arrayDateinWeek[0].full),0));
+    // console.log('prev');
+    // console.log(previousDay(new Date(this.arrayDateinWeek[0].full),0));
 
-    this.loopWeekDate(previousDay(new Date(this.arrayDateinWeek[0].full),1));
+    this.loopWeekDate(previousDay(new Date(this.arrayDateinWeek[0].full), 1));
   }
   button(id: any) {
     this.router.navigate(['/view-reservation/', id]);
