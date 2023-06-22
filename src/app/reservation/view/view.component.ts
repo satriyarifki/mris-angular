@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { forkJoin } from 'rxjs';
+import { ApiService } from 'src/app/services/api.service';
 const resv = [
   {
     id: 1,
@@ -76,10 +78,32 @@ const resv = [
 export class ViewComponent {
   idResv = this.actRouter.snapshot.params['id'];
   resv = resv;
-  constructor(private actRouter: ActivatedRoute) {
+
+  // API Variable
+  reserv: any;
+  resources: any;
+  accessories: any;
+  constructor(
+    private actRouter: ActivatedRoute,
+    private apiService: ApiService
+  ) {
     console.log();
+    forkJoin(
+      apiService.reservGetById(this.idResv),
+      apiService.resourcesGet(),
+      apiService.accessoriesGetById(this.idResv)
+    ).subscribe(([reservById, resources, accessories]) => {
+      this.reserv = reservById;
+      this.resources = resources;
+      this.accessories = accessories;
+      console.log(this.accessories);
+      
+    });
   }
   filterReservationById(id: any) {
-    return this.resv.filter((data: any) => data.id == id);
+    return this.resv?.filter((data: any) => data.id == id);
+  }
+  filterResourcesById(id: any) {
+    return this.resources?.filter((data: any) => data.id == id)[0];
   }
 }

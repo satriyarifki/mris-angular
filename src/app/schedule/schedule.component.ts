@@ -141,10 +141,8 @@ export class ScheduleComponent {
       ([reserv, resources]) => {
         this.reservApi = reserv;
         this.resourcesApi = resources;
-        console.log(format(new Date(this.reservApi[1].begin), 'HH:mm'));
-        console.log(
-          this.filterBookedWithHour('Wednesday', '06/21/2023', 2, '13:00')[0].title
-        );
+        console.log(reserv);
+        
       }
     );
 
