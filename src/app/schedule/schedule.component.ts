@@ -1,5 +1,4 @@
-import { IfStmt } from '@angular/compiler';
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   format,
@@ -10,6 +9,7 @@ import {
   nextSaturday,
   parseISO,
 } from 'date-fns';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { forkJoin } from 'rxjs';
 import { ApiService } from '../services/api.service';
 
@@ -117,7 +117,7 @@ const booked = [
   templateUrl: './schedule.component.html',
   styleUrls: ['./schedule.component.css'],
 })
-export class ScheduleComponent {
+export class ScheduleComponent implements OnInit {
   hours = hour;
   hourHalf = hourHalf;
   roomName = roomName;
@@ -135,20 +135,31 @@ export class ScheduleComponent {
   total: number = 0;
   dateNow = new Date();
 
-  constructor(private router: Router, private apiService: ApiService) {
+  constructor(
+    private router: Router,
+    private apiService: ApiService,
+    private spinner: NgxSpinnerService
+  ) {
     console.log();
+
     forkJoin(apiService.reservGet(), apiService.resourcesGet()).subscribe(
       ([reserv, resources]) => {
         this.reservApi = reserv;
         this.resourcesApi = resources;
         console.log(reserv);
-        
+      },
+      (err) => {},
+      () => {
+        // spinner.hide();
       }
     );
 
     this.loopWeekDate(new Date());
   }
   ngOnInit() {
+    this.spinner.show('cahya');
+    console.log(this.spinner.getSpinner('mySpinner'));
+
     // this.inputDate = format(new Date(), 'P');
   }
   sendTheNewValue(event: any) {
@@ -231,8 +242,7 @@ export class ScheduleComponent {
   filterReserv(date: any, room: any) {
     return this.reservApi.filter(
       (data: any) =>
-        format(new Date(data.end), 'P') == date &&
-        data.resourceId == room
+        format(new Date(data.end), 'P') == date && data.resourceId == room
     );
   }
   filterBookedWithHour(day: any, date: any, room: any, start: any) {
@@ -263,6 +273,7 @@ export class ScheduleComponent {
     } else if (date.getDay() == 6) {
       lastDay == date;
     }
+    console.log('1');
 
     while (firstDay <= lastDay) {
       this.arrayDateinWeek.push({
@@ -276,7 +287,7 @@ export class ScheduleComponent {
 
       firstDay.setDate(firstDay.getDate() + 1);
     }
-    // console.log(this.arrayDateinWeek);
+    console.log('2');
   }
   getFirstDayOfWeek(d: any) {
     // 👇️ clone date object, so we don't mutate it
@@ -303,7 +314,6 @@ export class ScheduleComponent {
   nextWeek() {
     // console.log('next');
     // console.log(nextDay(new Date(this.arrayDateinWeek[6].full),0) );
-
     this.loopWeekDate(nextDay(new Date(this.arrayDateinWeek[6].full), 1));
   }
   previousWeek() {

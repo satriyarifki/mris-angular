@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -11,6 +11,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginComponent } from './auth/login/login.component';
 import { HttpClientModule } from '@angular/common/http';
+import { AlertComponent } from './layouts/alert/alert.component';
+import { NgxSpinnerModule } from "ngx-spinner";
 
 // import { MatFormFieldModule } from '@angular/material/input';
 
@@ -22,6 +24,7 @@ import { HttpClientModule } from '@angular/common/http';
     ViewComponent,
     CreateComponent,
     LoginComponent,
+    AlertComponent,
   ],
   imports: [
     BrowserModule,
@@ -30,8 +33,10 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserAnimationsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    NgxSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule {}
