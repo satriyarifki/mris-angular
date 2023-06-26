@@ -1,38 +1,59 @@
 <!-- component -->
-<div class="h-[92vh] md:flex">
-  <div
-    class="relative overflow-hidden md:flex w-1/2 bg-gradient-to-tr from-blue-800 to-purple-700 i justify-around items-center hidden"
-  >
-    <div>
-      <h1 class="text-white font-bold text-4xl font-sans">Meeting Room <br> Information System</h1>
-      <p class="text-white mt-1">
-        Make reservation for room that you need
-      </p>
-      <!-- <button
+<div class="h-[83vh] flex items-stretch">
+  <div class="h-[85%] w-4/5 mx-auto self-end lg:flex rounded-md shadow-xl">
+    <div
+      class="relative overflow-hidden lg:flex w-1/2 bg-gradient-to-tr from-blue-800 to-purple-700 justify-around items-center hidden"
+    >
+      <div>
+        <h1 class="text-white font-bold text-4xl font-sans">
+          Meeting Room <br />
+          Information System
+        </h1>
+        <p class="text-white mt-1">Make reservation for room that you need</p>
+        <!-- <button
         type="submit"
         class="block w-28 bg-white text-indigo-800 mt-4 py-2 rounded-2xl font-bold mb-2"
       >
         Read More
       </button> -->
+      </div>
+      <div
+        class="absolute -bottom-32 -left-40 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"
+      ></div>
+      <div
+        class="absolute -bottom-40 -left-20 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"
+      ></div>
+      <div
+        class="absolute -top-40 -right-0 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"
+      ></div>
+      <div
+        class="absolute -top-20 -right-20 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"
+      ></div>
     </div>
     <div
-      class="absolute -bottom-32 -left-40 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"
-    ></div>
-    <div
-      class="absolute -bottom-40 -left-20 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"
-    ></div>
-    <div
-      class="absolute -top-40 -right-0 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"
-    ></div>
-    <div
-      class="absolute -top-20 -right-20 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"
-    ></div>
-  </div>
-  <div class="flex md:w-1/2 justify-center py-10 items-center bg-white">
-    <form class="bg-white">
-      <h1 class="text-gray-800 font-bold text-2xl mb-1">Login to MRIS</h1>
-      <p class="text-sm font-normal text-gray-600 mb-7">Welcome!</p>
-      <!-- <div class="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
+      class="relative overflow-hidden flex lg:w-1/2 justify-center mx-auto py-10 h-full items-center bg-white"
+    >
+      <a
+        [routerLink]="['/']"
+        class="absolute top-3 right-4 rounded-sm cursor-pointer bg-gradient-to-tr from-blue-700 to-purple-600 hover:from-blue-800 hover:to-purple-700 hover:bg-gray-100 transition-colors px-2 py-1"
+        href=""
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="20"
+          viewBox="0 -960 960 960"
+          width="20"
+          fill="white"
+        >
+          <path
+            d="M291-232.348 232.348-291l189-189-189-189L291-727.652l189 189 189-189L727.652-669l-189 189 189 189L669-232.348l-189-189-189 189Z"
+          />
+        </svg>
+      </a>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="bg-white">
+        <h1 class="text-gray-800 font-bold text-2xl mb-1">Login to MRIS</h1>
+        <p class="text-sm font-normal text-gray-600 mb-7">Welcome!</p>
+        <!-- <div class="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-5 w-5 text-gray-400"
@@ -52,31 +73,41 @@
           id=""
           placeholder="Full name"
         />
-      </div>
-      <div class="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 text-gray-400"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"
-          />
-        </svg>
-        <input
-          class="pl-2 outline-none border-none"
-          type="text"
-          name=""
-          id=""
-          placeholder="Username"
-        />
       </div> -->
-      <div class="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
+        <div class="flex items-center border-2 py-2 px-3 rounded-2xl">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 text-gray-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"
+            />
+          </svg>
+          <input
+            class="pl-2 outline-none border-none"
+            type="text"
+            name="nik"
+            id="nik"
+            formControlName="nik"
+            placeholder="NIK"
+          />
+        </div>
+        <div *ngIf="submitted && f['nik'].errors" class="invalid-feedback">
+          <div
+            *ngIf="f['nik'].errors['required']"
+            class="text-red-500 dark:text-red-500 text-sm text-start"
+          >
+            NIK is required
+          </div>
+        </div>
+        <div class="mb-4"></div>
+        <!-- <div class="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-5 w-5 text-gray-400"
@@ -98,37 +129,62 @@
           id=""
           placeholder="Email Address"
         />
-      </div>
-      <div class="flex items-center border-2 py-2 px-3 rounded-2xl">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 text-gray-400"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-            clip-rule="evenodd"
+      </div> -->
+        <div class="flex items-center border-2 py-2 px-3 rounded-2xl">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 text-gray-400"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          <input
+            class="pl-2 outline-none border-none"
+            [type]="this.showPassword ? 'text' : 'password'"
+            name="password"
+            id="password"
+            formControlName="password"
+            placeholder="Password"
           />
-        </svg>
-        <input
-          class="pl-2 outline-none border-none"
-          type="text"
-          name=""
-          id=""
-          placeholder="Password"
-        />
-      </div>
-      <button
-        type="submit"
-        class="block w-full bg-indigo-600 mt-4 py-2 rounded-2xl text-white font-semibold mb-2"
-      >
-        Login
-      </button>
-      <span class="text-sm ml-2 hover:text-blue-500 cursor-pointer"
-        >Forgot Password ?</span
-      >
-    </form>
+          <button type="button" (click)="changeVisibilityPassword()">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              class="w-6 h-6 mx-1 fill-[#04517481] hover:fill-[#00356b] text-gray-400 transition-colors duration-300 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400"
+            >
+              <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+              <path
+                fill-rule="evenodd"
+                d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 010-1.113zM17.25 12a5.25 5.25 0 11-10.5 0 5.25 5.25 0 0110.5 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+        </div>
+        <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
+          <div
+            *ngIf="f['password'].errors['required']"
+            class="text-red-500 dark:text-red-500 text-sm text-start"
+          >
+            Password is required
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="block w-full bg-indigo-600 mt-4 py-2 rounded-2xl text-white font-semibold mb-2"
+        >
+          Login
+        </button>
+        <span class="text-sm ml-2 hover:text-blue-500 cursor-pointer"
+          >Forgot Password ?</span
+        >
+      </form>
+    </div>
   </div>
 </div>

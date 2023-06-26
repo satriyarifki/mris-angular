@@ -94,11 +94,13 @@
           </button> -->
 
           <button
-          [routerLink]="['/login']" routerLinkActive="router-link-active" 
-            class="bg-white flex items-center text-gray-700 dark:text-gray-300 justify-center gap-x-3 text-sm sm:text-base dark:bg-gray-900 dark:border-gray-700 dark:hover:bg-gray-800 rounded-lg hover:bg-gray-100 duration-300 transition-colors border px-5 py-2"
+            *ngIf="onAuthCheck()"
+            [routerLink]="['/login']"
+            routerLinkActive="router-link-active"
+            class="bg-white flex items-center text-gray-700  justify-center gap-x-3 text-sm sm:text-base   rounded-lg hover:bg-gray-100 duration-300 transition-colors border px-5 py-2"
           >
             <svg
-            class=""
+              class=""
               xmlns="http://www.w3.org/2000/svg"
               height="20"
               viewBox="0 -960 960 960"
@@ -110,6 +112,25 @@
             </svg>
 
             <span>Login</span>
+          </button>
+          <button
+            *ngIf="!onAuthCheck()"
+            (click)="signOut()"
+            class="bg-white flex items-center text-red-500  justify-center gap-x-3 text-sm sm:text-base rounded-lg hover:bg-gray-100 duration-300 transition-colors border px-5 py-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="20"
+              viewBox="0 -960 960 960"
+              width="20"
+              fill="red"
+            >
+              <path
+                d="M180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h291v60H180v600h291v60H180Zm486-185-43-43 102-102H375v-60h348L621-612l43-43 176 176-174 174Z"
+              />
+            </svg>
+
+            <span>Log Out</span>
           </button>
 
           <!-- <button

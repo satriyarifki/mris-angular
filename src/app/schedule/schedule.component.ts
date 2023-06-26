@@ -12,6 +12,7 @@ import {
 import { NgxSpinnerService } from 'ngx-spinner';
 import { forkJoin } from 'rxjs';
 import { ApiService } from '../services/api.service';
+import { AuthService } from '../services/auth/auth.service';
 
 const hour = [
   '07',
@@ -136,17 +137,20 @@ export class ScheduleComponent implements OnInit {
   dateNow = new Date();
 
   constructor(
+    private authService: AuthService,
     private router: Router,
     private apiService: ApiService,
     private spinner: NgxSpinnerService
   ) {
-    console.log();
-
+    console.log('show');
+    spinner.show('cahya');
     forkJoin(apiService.reservGet(), apiService.resourcesGet()).subscribe(
       ([reserv, resources]) => {
         this.reservApi = reserv;
         this.resourcesApi = resources;
         console.log(reserv);
+        console.log('hide');
+        this.spinner.hide('cahya');
       },
       (err) => {},
       () => {
@@ -155,11 +159,10 @@ export class ScheduleComponent implements OnInit {
     );
 
     this.loopWeekDate(new Date());
+    console.log(authService.getToken());
+    
   }
   ngOnInit() {
-    this.spinner.show('cahya');
-    console.log(this.spinner.getSpinner('mySpinner'));
-
     // this.inputDate = format(new Date(), 'P');
   }
   sendTheNewValue(event: any) {
@@ -287,7 +290,6 @@ export class ScheduleComponent implements OnInit {
 
       firstDay.setDate(firstDay.getDate() + 1);
     }
-    console.log('2');
   }
   getFirstDayOfWeek(d: any) {
     // 👇️ clone date object, so we don't mutate it
@@ -321,6 +323,8 @@ export class ScheduleComponent implements OnInit {
     // console.log(previousDay(new Date(this.arrayDateinWeek[0].full),0));
 
     this.loopWeekDate(previousDay(new Date(this.arrayDateinWeek[0].full), 1));
+
+    this.spinner.hide('cahya');
   }
   button(id: any) {
     this.router.navigate(['/view-reservation/', id]);
@@ -329,5 +333,11 @@ export class ScheduleComponent implements OnInit {
     console.log('create');
 
     this.router.navigate(['/create-reservation']);
+  }
+  onAuthCheck() {
+    if (this.authService.getToken() == null) {
+      return false;
+    }
+    return true;
   }
 }

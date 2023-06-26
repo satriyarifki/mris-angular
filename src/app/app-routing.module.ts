@@ -4,12 +4,13 @@ import { ScheduleComponent } from './schedule/schedule.component';
 import { ViewComponent } from './reservation/view/view.component';
 import { CreateComponent } from './reservation/create/create.component';
 import { LoginComponent } from './auth/login/login.component';
+import { OnAuthGuard, OutAuthGuard } from './services/guard/guard.guard';
 
 const routes: Routes = [
   { path: '', component: ScheduleComponent },
   { path: 'view-reservation/:id', component: ViewComponent },
-  { path: 'create-reservation', component: CreateComponent },
-  { path: 'login', component: LoginComponent },
+  { path: 'create-reservation', component: CreateComponent, canActivate: [OnAuthGuard] },
+  { path: 'login', component: LoginComponent, canActivate: [OutAuthGuard] },
 ];
 
 @NgModule({

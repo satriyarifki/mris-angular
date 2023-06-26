@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import {
   format,
   differenceInHours,
@@ -53,6 +54,7 @@ export class CreateComponent {
   resources: any;
   reservs: any[] = [];
   constructor(
+    private router: Router,
     private apiService: ApiService,
     private formBuilder: FormBuilder,
     private alertService: AlertService
@@ -136,6 +138,7 @@ export class CreateComponent {
               'Booked Reservation Success!',
               AlertType.Success
             );
+            this.router.navigate(['/'])
           },
           (er) => {
             console.log(er);

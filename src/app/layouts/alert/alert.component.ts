@@ -14,7 +14,7 @@ export class AlertComponent {
   message: any;
   type: any = AlertType.None;
 
-  constructor(private router: Router, private alertService: AlertService) {}
+  constructor(public router: Router, private alertService: AlertService) {}
 
   ngOnChanges(changes: SimpleChanges): void {}
 
@@ -44,6 +44,8 @@ export class AlertComponent {
   }
 
   closeAlert() {
+    this.message = '';
+    this.type = AlertType.None;
     this.show = false;
   }
 }

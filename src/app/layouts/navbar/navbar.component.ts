@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
-
+import { Router } from '@angular/router';
+import { AlertType } from 'src/app/services/alert/alert.model';
+import { AlertService } from 'src/app/services/alert/alert.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 declare global {
   var age: number;
@@ -35,13 +38,25 @@ globalThis.hourHalf = [
   '20',
   '20:30',
 ];
-globalThis.age = 18
+globalThis.age = 18;
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css']
+  styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent {
-  
+  constructor(private authService: AuthService, private router: Router, private alertService: AlertService) {}
+  onAuthCheck() {
+    if (this.authService.getToken() != null) {
+      return false;
+    }
+    return true;
+  }
+
+  signOut() {
+    this.authService.signOut();
+    this.alertService.onCallAlert('Log Out Sucess!', AlertType.Success)
+    this.router.navigate(['/login']);
+  }
 }
