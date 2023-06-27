@@ -226,11 +226,7 @@ export class ScheduleComponent implements OnInit {
     }
     return hour;
   }
-  filterBooked(date: any, room: any) {
-    return this.booked.filter(
-      (data: any) => data.date == date && data.room == room
-    );
-  }
+  
   filterReserv(date: any, room: any) {
     return this.reservApi.filter(
       (data: any) =>
@@ -238,13 +234,6 @@ export class ScheduleComponent implements OnInit {
     );
   }
   filterBookedWithHour(day: any, date: any, room: any, start: any) {
-    // return this.booked.filter(
-    //   (data: any) =>
-    //     data.date == date &&
-    //     data.room == room &&
-    //     data.start == start &&
-    //     data.dayName == day
-    // );
 
     return this.reservApi.filter(
       (data: any) =>
