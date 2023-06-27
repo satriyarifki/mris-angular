@@ -6,6 +6,9 @@ import {
   differenceInHours,
   differenceInMinutes,
   areIntervalsOverlapping,
+  differenceInDays,
+  differenceInWeeks,
+  addDays,
 } from 'date-fns';
 import { forkJoin } from 'rxjs';
 import { AlertType } from 'src/app/services/alert/alert.model';
@@ -84,6 +87,8 @@ export class CreateComponent {
       end: ['', Validators.required],
       length: [0, Validators.required],
       repeat: [false, Validators.required],
+      repeatWeek: [1, Validators.required],
+      repeatRecurrence: ['', Validators.required],
       title: ['', Validators.required],
       description: ['', Validators.required],
     });
@@ -127,21 +132,52 @@ export class CreateComponent {
       return;
     }
 
-    this.apiService.reservPost(body).subscribe(
-      (data) => {
-        console.log(data);
-        bodyAcs.reservationId = data.id;
-        this.apiService.accessoriesPost(bodyAcs).subscribe(
-          (elem) => {
-            console.log(elem);
-            this.alertService.onCallAlert(
-              'Booked Reservation Success!',
-              AlertType.Success
+    if (body.repeat) {
+      let repeatLength =
+        (differenceInWeeks(
+          new Date(this.f['repeatRecurrence'].value),
+          new Date(this.f['begin'].value)
+        ) /
+          this.f['repeatWeek'].value) |
+        0;
+      let loopDate = new Date(this.f['begin'].value);
+      console.log(repeatLength);
+
+      for (let index = 0; index <= repeatLength; index++) {
+        body.begin = addDays(
+          new Date(this.f['begin'].value),
+          index * (7 * this.f['repeatWeek'].value)
+        );
+        body.end = addDays(
+          new Date(this.f['end'].value),
+          index * (7 * this.f['repeatWeek'].value)
+        );
+        console.log(body.begin);
+        this.apiService.reservPost(body).subscribe(
+          (data) => {
+            console.log(data);
+            bodyAcs.reservationId = data.id;
+            this.apiService.accessoriesPost(bodyAcs).subscribe(
+              (elem) => {
+                console.log(elem);
+                this.alertService.onCallAlert(
+                  'Booked Reservation Success!',
+                  AlertType.Success
+                );
+                this.router.navigate(['/']);
+              },
+              (er) => {
+                console.log(er);
+
+                this.alertService.onCallAlert(
+                  'Booked Reservation Fail!',
+                  AlertType.Error
+                );
+              }
             );
-            this.router.navigate(['/'])
           },
-          (er) => {
-            console.log(er);
+          (err) => {
+            console.log(err);
 
             this.alertService.onCallAlert(
               'Booked Reservation Fail!',
@@ -149,16 +185,43 @@ export class CreateComponent {
             );
           }
         );
-      },
-      (err) => {
-        console.log(err);
-
-        this.alertService.onCallAlert(
-          'Booked Reservation Fail!',
-          AlertType.Error
-        );
       }
-    );
+    } else {
+      this.apiService.reservPost(body).subscribe(
+        (data) => {
+          console.log(data);
+          bodyAcs.reservationId = data.id;
+          this.apiService.accessoriesPost(bodyAcs).subscribe(
+            (elem) => {
+              console.log(elem);
+              this.alertService.onCallAlert(
+                'Booked Reservation Success!',
+                AlertType.Success
+              );
+              this.router.navigate(['/']);
+            },
+            (er) => {
+              console.log(er);
+
+              this.alertService.onCallAlert(
+                'Booked Reservation Fail!',
+                AlertType.Error
+              );
+            }
+          );
+        },
+        (err) => {
+          console.log(err);
+
+          this.alertService.onCallAlert(
+            'Booked Reservation Fail!',
+            AlertType.Error
+          );
+        }
+      );
+    }
+
+    //
   }
 
   isOverlappingTime(begin: any, end: any, resourceId: any) {
@@ -186,5 +249,12 @@ export class CreateComponent {
       });
     }
     return bool;
+  }
+  repeatChanges() {
+    console.log(this.f['repeat'].value);
+    if (this.f['repeat'].value) {
+      this.f['repeatWeek'].setValue(1);
+      this.f['repeatRecurrence'].setValue('');
+    }
   }
 }
