@@ -18,16 +18,6 @@ class OutAuthGuard {
     }
   }
 }
-class OnAuthGuard{
-  constructor(private authService: AuthService) {}
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    var token = this.authService.getToken();
-    if (token != null) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-}
 
-export { OnAuthGuard, OutAuthGuard };
+
+export { OutAuthGuard };

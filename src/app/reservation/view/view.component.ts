@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { ApiService } from 'src/app/services/api.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 const resv = [
   {
     id: 1,
@@ -85,7 +86,8 @@ export class ViewComponent {
   accessories: any;
   constructor(
     private actRouter: ActivatedRoute,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private authService: AuthService
   ) {
     console.log();
     forkJoin(
@@ -105,5 +107,11 @@ export class ViewComponent {
   }
   filterResourcesById(id: any) {
     return this.resources?.filter((data: any) => data.id == id)[0];
+  }
+  onAuthCheck() {
+    if (this.authService.getToken() != null) {
+      return true;
+    }
+    return false;
   }
 }

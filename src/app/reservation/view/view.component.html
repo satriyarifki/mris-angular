@@ -1,15 +1,60 @@
 <div
-  class="flex flex-wrap bg-white shadow-lg rounded-xl w-full md:w-11/12 mx-auto"
+  class="flex flex-wrap relative justify-center bg-white shadow-lg rounded-xl w-full my-4 md:w-11/12 mx-auto"
 >
-  <div class="relative w-full p-4 overflow-hidden space-y-1 my-3 lg:w-3/5">
+  <div class="absolute right-0 h-fit flex justify-between">
+    <a
+      [routerLink]="['/']"
+      class="m-2 rounded-sm cursor-pointer bg-gradient-to-tr from-blue-700 to-purple-600 hover:from-blue-800 hover:to-purple-700 hover:bg-gray-100 transition-colors px-2 py-1"
+      href=""
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        height="20"
+        viewBox="0 -960 960 960"
+        width="20"
+        fill="white"
+      >
+        <path
+          d="M291-232.348 232.348-291l189-189-189-189L291-727.652l189 189 189-189L727.652-669l-189 189 189 189L669-232.348l-189-189-189 189Z"
+        />
+      </svg>
+    </a>
+    <div></div>
+  </div>
+  <div class="relative w-5/6 p-4 my-2 overflow-hidden space-y-1 lg:w-4/5">
     <div class="flex items-center justify-between w-full mb-6">
       <p class="text-xl font-medium text-gray-800">View Reservation ID</p>
-      <!-- <button class="flex items-center text-gray-800 border-0 hover:text-black focus:outline-none">
-                <svg width="20" height="20" fill="currentColor" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1600 736v192q0 40-28 68t-68 28h-416v416q0 40-28 68t-68 28h-192q-40 0-68-28t-28-68v-416h-416q-40 0-68-28t-28-68v-192q0-40 28-68t68-28h416v-416q0-40 28-68t68-28h192q40 0 68 28t28 68v416h416q40 0 68 28t28 68z">
-                    </path>
-                </svg>
-            </button> -->
+
+      <div class="flex" *ngIf="onAuthCheck()">
+        <a
+          class="m-1 rounded-sm cursor-pointer bg-gradient-to-tr from-yellow-400 to-orange-300 hover:from-yellow-500 hover:to-orange-400 hover:bg-gray-100 transition-colors px-2 py-1"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="20"
+            viewBox="0 -960 960 960"
+            width="20"
+            fill="white"
+          >
+            <path
+              d="M180-180h44l443-443-44-44-443 443v44Zm614-486L666-794l42-42q17-17 42-17t42 17l44 44q17 17 17 42t-17 42l-42 42Zm-42 42L248-120H120v-128l504-504 128 128Zm-107-21-22-22 44 44-22-22Z"
+            />
+          </svg>
+        </a>
+        <a
+          class="m-1 rounded-sm cursor-pointer bg-gradient-to-tr from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-500 hover:bg-gray-100 transition-colors px-2 py-1"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="20"
+            viewBox="0 -960 960 960"
+            width="20"
+            fill="white"
+          >
+            <path d="M200-450v-60h560v60H200Z" />
+          </svg>
+        </a>
+      </div>
     </div>
     <div class="flex flex-wrap space-x-3">
       <div
@@ -269,41 +314,8 @@
         <h1 class="">{{ reserv?.description }}</h1>
       </div>
     </div>
-
-    <!-- <div class="flex items-center justify-between p-3  bg-purple-100 rounded">
-            <span class="p-2 bg-white rounded-lg">
-                <svg width="20" height="20" fill="currentColor" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1596 380q28 28 48 76t20 88v1152q0 40-28 68t-68 28h-1344q-40 0-68-28t-28-68v-1600q0-40 28-68t68-28h896q40 0 88 20t76 48zm-444-244v376h376q-10-29-22-41l-313-313q-12-12-41-22zm384 1528v-1024h-416q-40 0-68-28t-28-68v-416h-768v1536h1280zm-128-448v320h-1024v-192l192-192 128 128 384-384zm-832-192q-80 0-136-56t-56-136 56-136 136-56 136 56 56 136-56 136-136 56z">
-                    </path>
-                </svg>
-            </span>
-            <div class="flex items-center justify-between w-full ml-2">
-                <p>
-                    Launch of Itachi
-                </p>
-                <p>
-                    22.07
-                </p>
-            </div>
-        </div>
-        <div class="flex items-center justify-between p-3  bg-yellow-100 rounded">
-            <span class="p-2 bg-white rounded-lg">
-                <svg width="20" height="20" fill="currentColor" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M960 256q0-26-19-45t-45-19-45 19-19 45 19 45 45 19 45-19 19-45zm832 928v352q0 22-20 30-8 2-12 2-12 0-23-9l-93-93q-119 143-318.5 226.5t-429.5 83.5-429.5-83.5-318.5-226.5l-93 93q-9 9-23 9-4 0-12-2-20-8-20-30v-352q0-14 9-23t23-9h352q22 0 30 20 8 19-7 35l-100 100q67 91 189.5 153.5t271.5 82.5v-647h-192q-26 0-45-19t-19-45v-128q0-26 19-45t45-19h192v-163q-58-34-93-92.5t-35-128.5q0-106 75-181t181-75 181 75 75 181q0 70-35 128.5t-93 92.5v163h192q26 0 45 19t19 45v128q0 26-19 45t-45 19h-192v647q149-20 271.5-82.5t189.5-153.5l-100-100q-15-16-7-35 8-20 30-20h352q14 0 23 9t9 23z">
-                    </path>
-                </svg>
-            </span>
-            <div class="flex items-center justify-between w-full ml-2">
-                <p>
-                    Helfest tickets
-                </p>
-                <p>
-                    22.07
-                </p>
-            </div>
-        </div> -->
   </div>
-  <div class="relative w-full p-4 overflow-hidden space-y-1 my-3 lg:w-2/5">
+  <!-- <div class="relative w-full p-4 overflow-hidden space-y-1 my-3 lg:w-2/5">
     <div class="flex items-center justify-between w-full lg:m-[26px]"></div>
     <div class="flex flex-wrap space-x-3">
       <div
@@ -333,5 +345,5 @@
         <h1 class=""></h1>
       </div>
     </div>
-  </div>
+  </div> -->
 </div>

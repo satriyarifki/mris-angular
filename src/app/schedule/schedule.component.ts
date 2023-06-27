@@ -142,14 +142,11 @@ export class ScheduleComponent implements OnInit {
     private apiService: ApiService,
     private spinner: NgxSpinnerService
   ) {
-    console.log('show');
     spinner.show('cahya');
     forkJoin(apiService.reservGet(), apiService.resourcesGet()).subscribe(
       ([reserv, resources]) => {
         this.reservApi = reserv;
         this.resourcesApi = resources;
-        console.log(reserv);
-        console.log('hide');
         this.spinner.hide('cahya');
       },
       (err) => {},
@@ -159,7 +156,6 @@ export class ScheduleComponent implements OnInit {
     );
 
     this.loopWeekDate(new Date());
-    console.log(authService.getToken());
     
   }
   ngOnInit() {
@@ -172,10 +168,6 @@ export class ScheduleComponent implements OnInit {
   ColspanLength(date: any, room: any) {
     let data = this.filterReserv(date, room);
     let minHour = 0;
-    // data.forEach((element) => {
-    //   minHour += element.longHours;
-    //   // console.log(minHour);
-    // });
     data.forEach((element) => {
       minHour += element.length;
       // console.log(minHour);
@@ -184,9 +176,6 @@ export class ScheduleComponent implements OnInit {
   }
   changeHourArray(date: any, room: any, hours: any) {
     let data = this.filterReserv(date, room);
-    // console.log(date + ' ' + room);
-
-    // console.log(data);
 
     let hour = [
       '07:00',
@@ -276,7 +265,6 @@ export class ScheduleComponent implements OnInit {
     } else if (date.getDay() == 6) {
       lastDay == date;
     }
-    console.log('1');
 
     while (firstDay <= lastDay) {
       this.arrayDateinWeek.push({

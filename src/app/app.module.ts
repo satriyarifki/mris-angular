@@ -13,6 +13,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { HttpClientModule } from '@angular/common/http';
 import { AlertComponent } from './layouts/alert/alert.component';
 import { NgxSpinnerModule } from "ngx-spinner";
+import { NotFoundComponent } from './layouts/not-found/not-found.component';
 
 // import { MatFormFieldModule } from '@angular/material/input';
 
@@ -25,6 +26,7 @@ import { NgxSpinnerModule } from "ngx-spinner";
     CreateComponent,
     LoginComponent,
     AlertComponent,
+    NotFoundComponent,
   ],
   imports: [
     BrowserModule,

@@ -4,8 +4,10 @@ import { ScheduleComponent } from './schedule/schedule.component';
 import { ViewComponent } from './reservation/view/view.component';
 import { CreateComponent } from './reservation/create/create.component';
 import { LoginComponent } from './auth/login/login.component';
-import { OnAuthGuard, OutAuthGuard } from './services/guard/guard.guard';
+import { OutAuthGuard } from './services/guard/guard.guard';
+import { OnAuthGuard } from './services/guard/on-auth.guard';
 import { AuthService } from './services/auth/auth.service';
+import { NotFoundComponent } from './layouts/not-found/not-found.component';
 
 const routes: Routes = [
   { path: '', component: ScheduleComponent },
@@ -13,8 +15,10 @@ const routes: Routes = [
   {
     path: 'create-reservation',
     component: CreateComponent,
+    canActivate: [OnAuthGuard],
   },
   { path: 'login', component: LoginComponent, canActivate: [OutAuthGuard] },
+  { path: '**', component: NotFoundComponent },
 ];
 
 @NgModule({

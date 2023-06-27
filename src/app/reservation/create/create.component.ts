@@ -14,6 +14,7 @@ import { forkJoin } from 'rxjs';
 import { AlertType } from 'src/app/services/alert/alert.model';
 import { AlertService } from 'src/app/services/alert/alert.service';
 import { ApiService } from 'src/app/services/api.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 let hour = [
   '07:00',
   '07:30',
@@ -60,7 +61,8 @@ export class CreateComponent {
     private router: Router,
     private apiService: ApiService,
     private formBuilder: FormBuilder,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private authService: AuthService
   ) {
     this.initialForm();
     forkJoin(apiService.resourcesGet(), apiService.reservGet()).subscribe(
@@ -69,13 +71,14 @@ export class CreateComponent {
         this.reservs = reservAll;
       }
     );
+    console.log(authService.getUser()[0].lg_name);
   }
   get f() {
     return this.form.controls;
   }
   initialForm() {
     this.form = this.formBuilder.group({
-      userId: [0],
+      userId: [this.authService.getUser()[0].lg_nik],
       resourceId: ['', Validators.required],
       laptop: [false, Validators.required],
       panaboard: [false, Validators.required],
@@ -89,6 +92,7 @@ export class CreateComponent {
       repeat: [false, Validators.required],
       repeatWeek: [1, Validators.required],
       repeatRecurrence: ['', Validators.required],
+      level: ['Generic', Validators.required],
       title: ['', Validators.required],
       description: ['', Validators.required],
     });
@@ -113,6 +117,7 @@ export class CreateComponent {
         ) / 60,
       repeat: this.f['repeat'].value,
       title: this.f['title'].value,
+      level: this.f['level'].value,
       description: this.f['description'].value,
     };
     let bodyAcs = {
@@ -152,14 +157,13 @@ export class CreateComponent {
           new Date(this.f['end'].value),
           index * (7 * this.f['repeatWeek'].value)
         );
-        console.log(body.begin);
+
         this.apiService.reservPost(body).subscribe(
           (data) => {
             console.log(data);
             bodyAcs.reservationId = data.id;
             this.apiService.accessoriesPost(bodyAcs).subscribe(
               (elem) => {
-                console.log(elem);
                 this.alertService.onCallAlert(
                   'Booked Reservation Success!',
                   AlertType.Success
@@ -167,8 +171,6 @@ export class CreateComponent {
                 this.router.navigate(['/']);
               },
               (er) => {
-                console.log(er);
-
                 this.alertService.onCallAlert(
                   'Booked Reservation Fail!',
                   AlertType.Error
@@ -177,7 +179,7 @@ export class CreateComponent {
             );
           },
           (err) => {
-            console.log(err);
+            // console.log(err);
 
             this.alertService.onCallAlert(
               'Booked Reservation Fail!',
@@ -193,7 +195,7 @@ export class CreateComponent {
           bodyAcs.reservationId = data.id;
           this.apiService.accessoriesPost(bodyAcs).subscribe(
             (elem) => {
-              console.log(elem);
+              // console.log(elem);
               this.alertService.onCallAlert(
                 'Booked Reservation Success!',
                 AlertType.Success
@@ -201,7 +203,7 @@ export class CreateComponent {
               this.router.navigate(['/']);
             },
             (er) => {
-              console.log(er);
+              // console.log(er);
 
               this.alertService.onCallAlert(
                 'Booked Reservation Fail!',
@@ -211,7 +213,7 @@ export class CreateComponent {
           );
         },
         (err) => {
-          console.log(err);
+          // console.log(err);
 
           this.alertService.onCallAlert(
             'Booked Reservation Fail!',
@@ -251,7 +253,6 @@ export class CreateComponent {
     return bool;
   }
   repeatChanges() {
-    console.log(this.f['repeat'].value);
     if (this.f['repeat'].value) {
       this.f['repeatWeek'].setValue(1);
       this.f['repeatRecurrence'].setValue('');
