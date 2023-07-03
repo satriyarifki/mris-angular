@@ -112,7 +112,7 @@
                           )[0]?.id
                         )
                       : onAuthCheck()
-                      ? buttonCreate()
+                      ? buttonCreate(day.full, item,room.id)
                       : null
                   "
                   [ngClass]="

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   format,
   differenceInHours,
@@ -9,6 +9,7 @@ import {
   differenceInDays,
   differenceInWeeks,
   addDays,
+  formatISO,
 } from 'date-fns';
 import { forkJoin } from 'rxjs';
 import { AlertType } from 'src/app/services/alert/alert.model';
@@ -54,11 +55,17 @@ let hour = [
 export class CreateComponent {
   form!: FormGroup;
   date = new Date();
+  //Params
+  datetimeParams = this.actRoutee.snapshot.queryParams['datetime'];
+  resourceParams = this.actRoutee.snapshot.queryParams['roomId'];
+  formatedDateTime = formatISO(new Date(this.datetimeParams)).slice(0, 16);
+
   //Api Variabel
   resources: any;
   reservs: any[] = [];
   constructor(
     private router: Router,
+    private actRoutee: ActivatedRoute,
     private apiService: ApiService,
     private formBuilder: FormBuilder,
     private alertService: AlertService,
@@ -71,28 +78,30 @@ export class CreateComponent {
         this.reservs = reservAll;
       }
     );
-    console.log(authService.getUser()[0].lg_name);
+    console.log(formatISO(new Date(this.datetimeParams)).slice(0, 16));
+
+    console.log(new Date(this.datetimeParams).toISOString().slice(0, 16));
   }
   get f() {
     return this.form.controls;
   }
   initialForm() {
     this.form = this.formBuilder.group({
-      userId: [this.authService.getUser()[0].lg_nik],
-      resourceId: ['', Validators.required],
+      userId: [this.authService.getUser().lg_nik],
+      resourceId: [this.resourceParams | 0, Validators.required],
       laptop: [false, Validators.required],
       panaboard: [false, Validators.required],
       papanTulis: [false, Validators.required],
       projector: [false, Validators.required],
       pocari: [false, Validators.required],
       soyjoy: [false, Validators.required],
-      begin: ['', Validators.required],
+      begin: [this.formatedDateTime, Validators.required],
       end: ['', Validators.required],
       length: [0, Validators.required],
       repeat: [false, Validators.required],
       repeatWeek: [1, Validators.required],
-      repeatRecurrence: ['', Validators.required],
-      level: ['Generic', Validators.required],
+      repeatRecurrence: [new Date(), Validators.required],
+      level: ['General', Validators.required],
       title: ['', Validators.required],
       description: ['', Validators.required],
     });
@@ -130,10 +139,6 @@ export class CreateComponent {
       soyjoy: this.f['soyjoy'].value,
     };
     if (this.isOverlappingTime(body.begin, body.end, body.resourceId)) {
-      this.alertService.onCallAlert(
-        'Date & Resource Booked! Choose Another!',
-        AlertType.Error
-      );
       return;
     }
 
@@ -233,29 +238,47 @@ export class CreateComponent {
         format(new Date(data.begin), 'P') == format(new Date(begin), 'P') &&
         data.resourceId == resourceId
     );
-
-    if (reservation.length != 0) {
-      reservation.forEach((element) => {
-        if (
-          areIntervalsOverlapping(
-            {
-              start: new Date(element.begin),
-              end: new Date(element.end),
-            },
-            { start: begin, end: end }
-          )
-        ) {
-          bool = true;
-          return;
-        }
-      });
+    try {
+      if (reservation.length != 0) {
+        // if (new Date(begin) > new Date(end)) {
+        //   return;
+        // } else {
+        reservation.forEach((element) => {
+          if (
+            areIntervalsOverlapping(
+              {
+                start: new Date(element.begin),
+                end: new Date(element.end),
+              },
+              { start: begin, end: end }
+            )
+          ) {
+            bool = true;
+            this.alertService.onCallAlert(
+              'Date & Resource Booked! Choose Another!',
+              AlertType.Error
+            );
+            return;
+          }
+        });
+        // }
+      }
+    } catch (error) {
+      console.log('hh' + error);
+      bool = true;
+      this.alertService.onCallAlert(
+        'Fill Begin and End Correctly!',
+        AlertType.Error
+      );
+      return bool;
     }
+
     return bool;
   }
   repeatChanges() {
     if (this.f['repeat'].value) {
       this.f['repeatWeek'].setValue(1);
-      this.f['repeatRecurrence'].setValue('');
+      this.f['repeatRecurrence'].setValue(new Date());
     }
   }
 }

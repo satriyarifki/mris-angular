@@ -1,75 +1,10 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
+import { AlertType } from 'src/app/services/alert/alert.model';
+import { AlertService } from 'src/app/services/alert/alert.service';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
-const resv = [
-  {
-    id: 1,
-    user: 'Gardha Gilang Ramadan (gramadhan@aio.co.id)',
-    resources:
-      'One For All, All For One (2nd Floor Big) include vidcon besar yealink',
-    accessories: '',
-    begin: '06/16/2023 8:00 AM',
-    end: '06/16/2023 5:00 PM',
-    reservLength: '0 days, 9 hours',
-    repeat: 'Does Not Repeat',
-    title: 'engineer shikoku dan csi',
-    desc: 'office teknisi shikoku dan csi',
-  },
-  {
-    id: 2,
-    user: 'Ramadan (gramadhan@aio.co.id)',
-    resources:
-      'One For All, All For One (2nd Floor Big) include vidcon besar yealink',
-    accessories: '',
-    begin: '06/16/2023 8:00 AM',
-    end: '06/16/2023 5:00 PM',
-    reservLength: '0 days, 9 hours',
-    repeat: 'Does Not Repeat',
-    title: 'engineer shikoku dan csi',
-    desc: 'office teknisi shikoku dan csi',
-  },
-  {
-    id: 3,
-    user: 'Gardha Ramadan (gramadhan@aio.co.id)',
-    resources:
-      'One For All, All For One (2nd Floor Big) include vidcon besar yealink',
-    accessories: '',
-    begin: '06/16/2023 8:00 AM',
-    end: '06/16/2023 5:00 PM',
-    reservLength: '0 days, 9 hours',
-    repeat: 'Does Not Repeat',
-    title: 'engineer shikoku dan csi',
-    desc: 'office teknisi shikoku dan csi',
-  },
-  {
-    id: 4,
-    user: 'Gardha Gilang (gramadhan@aio.co.id)',
-    resources:
-      'One For All, All For One (2nd Floor Big) include vidcon besar yealink',
-    accessories: '',
-    begin: '06/16/2023 8:00 AM',
-    end: '06/16/2023 5:00 PM',
-    reservLength: '0 days, 9 hours',
-    repeat: 'Does Not Repeat',
-    title: 'engineer shikoku dan csi',
-    desc: 'office teknisi shikoku dan csi',
-  },
-  {
-    id: 5,
-    user: 'Gilang Ramadan (gramadhan@aio.co.id)',
-    resources:
-      'One For All, All For One (2nd Floor Big) include vidcon besar yealink',
-    accessories: '',
-    begin: '06/16/2023 8:00 AM',
-    end: '06/16/2023 5:00 PM',
-    reservLength: '0 days, 9 hours',
-    repeat: 'Does Not Repeat',
-    title: 'engineer shikoku dan csi',
-    desc: 'office teknisi shikoku dan csi',
-  },
-];
 
 @Component({
   selector: 'app-view',
@@ -78,16 +13,18 @@ const resv = [
 })
 export class ViewComponent {
   idResv = this.actRouter.snapshot.params['id'];
-  resv = resv;
 
   // API Variable
   reserv: any;
   resources: any;
   accessories: any;
+  employee: any;
   constructor(
     private actRouter: ActivatedRoute,
+    private router: Router,
     private apiService: ApiService,
-    private authService: AuthService
+    private authService: AuthService,
+    private alertService: AlertService
   ) {
     console.log();
     forkJoin(
@@ -95,16 +32,38 @@ export class ViewComponent {
       apiService.resourcesGet(),
       apiService.accessoriesGetById(this.idResv)
     ).subscribe(([reservById, resources, accessories]) => {
+      console.log(
+        authService.getUserData() == null ||
+          (authService.getUserData()?.level > 5 &&
+            Number(authService.getUserData()?.employee_code) !=
+              Number(reservById?.userId))
+      );
+
+      if (
+        reservById == null ||
+        (reservById?.level == 'Confidential' &&
+          (authService.getUserData() == null ||
+            (authService.getUserData()?.level > 5 &&
+              Number(authService.getUserData()?.employee_code) !=
+                Number(reservById?.userId))))
+      ) {
+        console.log(
+          authService.getUserData()?.level > 5 ||
+            Number(authService.getUserData()?.employee_code) ==
+              Number(reservById?.userId)
+        );
+
+        this.router.navigate(['/']);
+      }
       this.reserv = reservById;
       this.resources = resources;
       this.accessories = accessories;
-      console.log(this.accessories);
-      
+      authService.employeesGetById(this.reserv?.userId).subscribe((data) => {
+        this.employee = data[0];
+      });
     });
   }
-  filterReservationById(id: any) {
-    return this.resv?.filter((data: any) => data.id == id);
-  }
+
   filterResourcesById(id: any) {
     return this.resources?.filter((data: any) => data.id == id)[0];
   }
@@ -113,5 +72,15 @@ export class ViewComponent {
       return true;
     }
     return false;
+  }
+  deleteReserv(id: any) {
+    console.log('test');
+
+    this.apiService.reservDelete(id).subscribe((data) => {
+      console.log(data);
+      this.alertService.onCallAlert('Delete Successfull!', AlertType.Success);
+    });
+    this.router.navigate(['/']);
+    // window.location.reload();
   }
 }

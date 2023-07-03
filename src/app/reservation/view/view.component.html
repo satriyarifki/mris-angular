@@ -26,7 +26,7 @@
       <p class="text-xl font-medium text-gray-800">View Reservation ID</p>
 
       <div class="flex" *ngIf="onAuthCheck()">
-        <a
+        <!-- <a
           class="m-1 rounded-sm cursor-pointer bg-gradient-to-tr from-yellow-400 to-orange-300 hover:from-yellow-500 hover:to-orange-400 hover:bg-gray-100 transition-colors px-2 py-1"
         >
           <svg
@@ -40,8 +40,9 @@
               d="M180-180h44l443-443-44-44-443 443v44Zm614-486L666-794l42-42q17-17 42-17t42 17l44 44q17 17 17 42t-17 42l-42 42Zm-42 42L248-120H120v-128l504-504 128 128Zm-107-21-22-22 44 44-22-22Z"
             />
           </svg>
-        </a>
+        </a> -->
         <a
+          (click)="deleteReserv(idResv)"
           class="m-1 rounded-sm cursor-pointer bg-gradient-to-tr from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-500 hover:bg-gray-100 transition-colors px-2 py-1"
         >
           <svg
@@ -65,7 +66,9 @@
       <div
         class="grow flex items-center justify-between p-3 bg-green-100 rounded"
       >
-        <h1 class="">{{ reserv?.userId }}</h1>
+        <h1 class="">
+          {{ employee?.employee_name }} ({{ employee?.mail_id }})
+        </h1>
       </div>
     </div>
     <div class="flex flex-wrap space-x-3">

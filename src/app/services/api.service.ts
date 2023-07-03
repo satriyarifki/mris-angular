@@ -24,6 +24,9 @@ export class ApiService {
   reservUpdate(id: any, body: any): Observable<any> {
     return this.http.post(this.baseUrl + 'reserv/' + id, body);
   }
+  reservDelete(id: any): Observable<any> {
+    return this.http.delete(this.baseUrl + 'reserv/' + id);
+  }
 
   //-------------------------------------------------------------RESOURCES
   resourcesGet(): Observable<any> {
@@ -49,4 +52,6 @@ export class ApiService {
   accessoriesUpdate(id: any, body: any): Observable<any> {
     return this.http.post(this.baseUrl + 'accessories/' + id, body);
   }
+
+  
 }

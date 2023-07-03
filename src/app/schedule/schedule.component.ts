@@ -8,6 +8,7 @@ import {
   previousSunday,
   nextSaturday,
   parseISO,
+  set,
 } from 'date-fns';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { forkJoin } from 'rxjs';
@@ -131,6 +132,7 @@ export class ScheduleComponent implements OnInit {
   arrayDateinWeek: any[] = [];
   reservApi: any[] = [];
   resourcesApi: any[] = [];
+  employeeData: any;
 
   // Variable
   total: number = 0;
@@ -148,15 +150,15 @@ export class ScheduleComponent implements OnInit {
         this.reservApi = reserv;
         this.resourcesApi = resources;
         this.spinner.hide('cahya');
-      },
-      (err) => {},
-      () => {
-        // spinner.hide();
       }
     );
 
+    if (this.onAuthCheck()) {
+      this.employeeData = authService.getUserData();
+    }
+    console.log(this.getUserName(18180));
+
     this.loopWeekDate(new Date());
-    
   }
   ngOnInit() {
     // this.inputDate = format(new Date(), 'P');
@@ -226,21 +228,72 @@ export class ScheduleComponent implements OnInit {
     }
     return hour;
   }
-  
+
   filterReserv(date: any, room: any) {
-    return this.reservApi.filter(
-      (data: any) =>
-        format(new Date(data.end), 'P') == date && data.resourceId == room
-    );
+    if (this.onAuthCheck() && this.employeeData?.level <= 5) {
+      // console.log('p');
+      return this.reservApi.filter(
+        (data: any) =>
+          format(new Date(data.end), 'P') == date && data.resourceId == room
+      );
+    } else if (this.onAuthCheck()) {
+      // console.log('pp');
+      return this.reservApi.filter(
+        (data: any) =>
+          format(new Date(data.end), 'P') == date &&
+          data.resourceId == room &&
+          (data.level == 'General' ||
+            Number(data.userId) == Number(this.employeeData?.employee_code))
+      );
+    } else {
+      // console.log('pp');
+      return this.reservApi.filter(
+        (data: any) =>
+          format(new Date(data.end), 'P') == date &&
+          data.resourceId == room &&
+          data.level == 'General'
+      );
+    }
   }
   filterBookedWithHour(day: any, date: any, room: any, start: any) {
+    if (this.onAuthCheck() && this.employeeData?.level <= 5) {
+      // console.log('p');
+      return this.reservApi.filter(
+        (data: any) =>
+          format(new Date(data.end), 'P') == date &&
+          data.resourceId == room &&
+          format(new Date(data.begin), 'HH:mm') == start
+      );
+    } else if (this.onAuthCheck()) {
+      // console.log('pp');
+      return this.reservApi.filter(
+        (data: any) =>
+          format(new Date(data.end), 'P') == date &&
+          data.resourceId == room &&
+          format(new Date(data.begin), 'HH:mm') == start &&
+          (data.level == 'General' ||
+            Number(data.userId) == Number(this.employeeData?.employee_code))
+      );
+    } else {
+      // console.log('pp');
+      return this.reservApi.filter(
+        (data: any) =>
+          format(new Date(data.end), 'P') == date &&
+          data.resourceId == room &&
+          format(new Date(data.begin), 'HH:mm') == start &&
+          data.level == 'General'
+      );
+    }
+  }
+  getUserName(id: any) {
+    let user;
 
-    return this.reservApi.filter(
-      (data: any) =>
-        format(new Date(data.end), 'P') == date &&
-        data.resourceId == room &&
-        format(new Date(data.begin), 'HH:mm') == start
-    );
+    this.authService.employeesGetById(id).subscribe((data) => {
+      console.log(data);
+
+      user = data;
+    });
+    return user;
   }
 
   loopWeekDate(date: any) {
@@ -306,10 +359,15 @@ export class ScheduleComponent implements OnInit {
   button(id: any) {
     this.router.navigate(['/view-reservation/', id]);
   }
-  buttonCreate() {
-    console.log('create');
-
-    this.router.navigate(['/create-reservation']);
+  buttonCreate(date: any, time: any, room: any) {
+    const datetime = set(new Date(date), {
+      hours: time.slice(0, 2),
+      minutes: time.slice(3, 5),
+    });
+    console.log(datetime);
+    this.router.navigate(['/create-reservation'], {
+      queryParams: { datetime: datetime, roomId: room },
+    });
   }
   onAuthCheck() {
     if (this.authService.getToken() == null) {
