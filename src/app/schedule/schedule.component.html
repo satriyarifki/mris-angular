@@ -112,7 +112,9 @@
                           )[0]?.id
                         )
                       : onAuthCheck()
-                      ? buttonCreate(day.full, item,room.id)
+                      ? !isDateTimePast(day.full, item)
+                        ? buttonCreate(day.full, item, room.id)
+                        : null
                       : null
                   "
                   [ngClass]="
@@ -123,6 +125,8 @@
                       item
                     ).length != 0
                       ? 'bg-blue-300 cursor-pointer hover:bg-blue-400 transition-colors w-8'
+                      : isDateTimePast(day.full, item)
+                      ? 'bg-gray-100'
                       : 'hover:bg-blue-100'
                   "
                   [attr.colspan]="

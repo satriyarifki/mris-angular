@@ -9,6 +9,7 @@ import {
   nextSaturday,
   parseISO,
   set,
+  compareAsc,
 } from 'date-fns';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { forkJoin } from 'rxjs';
@@ -32,33 +33,33 @@ const hour = [
   '20',
 ];
 const hourHalf = [
-  '07',
+  '07:00',
   '07:30',
-  '08',
+  '08:00',
   '08:30',
-  '09',
+  '09:00',
   '09:30',
-  '10',
+  '10:00',
   '10:30',
-  '11',
+  '11:00',
   '11:30',
-  '12',
+  '12:00',
   '12:30',
-  '13',
+  '13:00',
   '13:30',
-  '14',
+  '14:00',
   '14:30',
-  '15',
+  '15:00',
   '15:30',
-  '16',
+  '16:00',
   '16:30',
-  '17',
+  '17:00',
   '17:30',
-  '18',
+  '18:00',
   '18:30',
-  '19',
+  '19:00',
   '19:30',
-  '20',
+  '20:00',
   '20:30',
 ];
 const roomName = [
@@ -156,9 +157,10 @@ export class ScheduleComponent implements OnInit {
     if (this.onAuthCheck()) {
       this.employeeData = authService.getUserData();
     }
-    console.log(this.getUserName(18180));
+    
 
     this.loopWeekDate(new Date());
+    this.isDateTimePast(new Date(), '17:00')
   }
   ngOnInit() {
     // this.inputDate = format(new Date(), 'P');
@@ -374,5 +376,16 @@ export class ScheduleComponent implements OnInit {
       return false;
     }
     return true;
+  }
+  isDateTimePast(date:any, time:any){
+    if (compareAsc(set(new Date(date), {hours: time.slice(0, 2),
+      minutes: time.slice(3, 5),}), new Date()) == -1) {
+      return true;
+    } else {
+      return false;
+    }
+    console.log(compareAsc(set(new Date(date), {hours: time.slice(0, 2),
+      minutes: time.slice(3, 5),}), new Date()));
+    
   }
 }
