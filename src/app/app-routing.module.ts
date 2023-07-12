@@ -8,10 +8,12 @@ import { OutAuthGuard } from './services/guard/guard.guard';
 import { OnAuthGuard } from './services/guard/on-auth.guard';
 import { AuthService } from './services/auth/auth.service';
 import { NotFoundComponent } from './layouts/not-found/not-found.component';
+import { EditComponent } from './reservation/edit/edit.component';
 
 const routes: Routes = [
   { path: '', component: ScheduleComponent },
   { path: 'view-reservation/:id', component: ViewComponent },
+  { path: 'edit-reservation/:id', component: EditComponent },
   {
     path: 'create-reservation',
     component: CreateComponent,

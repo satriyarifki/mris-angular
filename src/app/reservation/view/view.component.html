@@ -26,7 +26,8 @@
       <p class="text-xl font-medium text-gray-800">View Reservation ID</p>
 
       <div class="flex" *ngIf="onAuthCheck()">
-        <!-- <a
+        <a
+        [routerLink]="['/edit-reservation/', idResv]" routerLinkActive="router-link-active" 
           class="m-1 rounded-sm cursor-pointer bg-gradient-to-tr from-yellow-400 to-orange-300 hover:from-yellow-500 hover:to-orange-400 hover:bg-gray-100 transition-colors px-2 py-1"
         >
           <svg
@@ -40,7 +41,7 @@
               d="M180-180h44l443-443-44-44-443 443v44Zm614-486L666-794l42-42q17-17 42-17t42 17l44 44q17 17 17 42t-17 42l-42 42Zm-42 42L248-120H120v-128l504-504 128 128Zm-107-21-22-22 44 44-22-22Z"
             />
           </svg>
-        </a> -->
+        </a>
         <a
           (click)="deleteReserv(idResv)"
           class="m-1 rounded-sm cursor-pointer bg-gradient-to-tr from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-500 hover:bg-gray-100 transition-colors px-2 py-1"
@@ -106,7 +107,7 @@
                   type="checkbox"
                   class="border-gray-200 rounded"
                   value="accessories?.laptop"
-                  [attr.checked]="accessories?.laptop"
+                  [attr.checked]="accessories?.laptop ? 'true' : null"
                   disabled
                 />
               </div>
