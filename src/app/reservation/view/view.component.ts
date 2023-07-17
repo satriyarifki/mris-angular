@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { format } from 'date-fns';
 import { forkJoin } from 'rxjs';
 import { AlertType } from 'src/app/services/alert/alert.model';
 import { AlertService } from 'src/app/services/alert/alert.service';
@@ -19,6 +20,9 @@ export class ViewComponent {
   resources: any;
   accessories: any;
   employee: any;
+
+  //Modal
+  deleteAlertBool: any;
   constructor(
     private actRouter: ActivatedRoute,
     private router: Router,
@@ -53,7 +57,7 @@ export class ViewComponent {
               Number(reservById?.userId)
         );
 
-        this.router.navigate(['/']);
+        this.router.navigate(['/schedule']);
       }
       this.reserv = reservById;
       this.resources = resources;
@@ -73,14 +77,37 @@ export class ViewComponent {
     }
     return false;
   }
+  goToSchedule(){
+    console.log(new Date(this.reserv.begin).toLocaleDateString());
+    
+    this.router.navigate(['/schedule' ], {
+      queryParams: { date: new Date(format(new Date(this.reserv.begin), 'MM-dd-yyyy'))},
+    } )
+  }
+  callDeleteAlert() {
+    this.deleteAlertBool = true;
+  }
+  closeDeleteAlert() {
+    this.deleteAlertBool = false;
+  }
   deleteReserv(id: any) {
     console.log('test');
 
-    this.apiService.reservDelete(id).subscribe((data) => {
-      console.log(data);
-      this.alertService.onCallAlert('Delete Successfull!', AlertType.Success);
-    });
-    this.router.navigate(['/']);
+    this.apiService.reservDelete(id).subscribe(
+      (data) => {
+        console.log(data);
+        this.closeDeleteAlert();
+        this.alertService.onCallAlert('Delete Successfull!', AlertType.Success);
+      },
+      (er) => {
+        this.closeDeleteAlert();
+      },
+      () => {
+        this.closeDeleteAlert();
+        this.router.navigate(['/schedule']);
+      }
+    );
+
     // window.location.reload();
   }
 }

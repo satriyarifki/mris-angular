@@ -112,8 +112,8 @@
                           )[0]?.id
                         )
                       : onAuthCheck()
-                      ? !isDateTimePast(day.full, item)
-                        ? buttonCreate(day.full, item, room.id)
+                      ? !isDateTimePast(day.datefull, item)
+                        ? buttonCreate(day.localeString, item, room.id)
                         : null
                       : null
                   "
@@ -124,8 +124,22 @@
                       room.id,
                       item
                     ).length != 0
-                      ? 'bg-blue-300 cursor-pointer hover:bg-blue-400 transition-colors w-8'
-                      : isDateTimePast(day.full, item)
+                      ? this.filterBookedWithHour(
+                          day.dayName,
+                          day.full,
+                          room.id,
+                          item
+                        )[0].length == 1
+                        ? 'bg-blue-300 cursor-pointer hover:bg-blue-400 transition-colors w-[6%]'
+                        : this.filterBookedWithHour(
+                            day.dayName,
+                            day.full,
+                            room.id,
+                            item
+                          )[0].length == 1.5
+                        ? 'bg-blue-300 cursor-pointer hover:bg-blue-400 transition-colors w-[9%]'
+                        : 'bg-blue-300 cursor-pointer hover:bg-blue-400 transition-colors '
+                      : isDateTimePast(day.datefull, item)
                       ? 'bg-gray-100'
                       : 'hover:bg-blue-100'
                   "
@@ -146,6 +160,17 @@
                   "
                   class="px-1 text-xs text-gray-800 border-2 border-gray-200"
                 >
+                  <!-- {{
+                    this.getEmployeeName(
+                      this.filterBookedWithHour(
+                        day.dayName,
+                        day.full,
+                        room.id,
+                        item
+                      )[0]?.userId
+                    )?.employee_name
+                  }} -->
+                  
                   {{
                     this.filterBookedWithHour(
                       day.dayName,

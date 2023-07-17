@@ -76,6 +76,9 @@ export class AuthService {
   employeesGet(): Observable<any> {
     return this.http.get(this.authUrl + 'employees');
   }
+  employeesKejayanGet(): Observable<any> {
+    return this.http.get(this.authUrl + 'employees/kejayan');
+  }
   employeesGetById(nik: any): Observable<any> {
     return this.http.get(this.authUrl + 'employee/' + nik);
   }

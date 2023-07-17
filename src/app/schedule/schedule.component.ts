@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   format,
   isYesterday,
@@ -10,6 +10,7 @@ import {
   parseISO,
   set,
   compareAsc,
+  isBefore,
 } from 'date-fns';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { forkJoin } from 'rxjs';
@@ -72,48 +73,6 @@ const roomName = [
   'Rumah Belajar',
   'Credible (Logistik)',
 ];
-const booked = [
-  {
-    id: 1,
-    dayName: 'Wednesday',
-    date: '06/14/2023',
-    start: '08',
-    room: 'For The Future (Floor 1st VIP)',
-    longHours: 3,
-  },
-  {
-    id: 2,
-    dayName: 'Wednesday',
-    date: '06/14/2023',
-    start: '14',
-    room: 'For The Future (Floor 1st VIP)',
-    longHours: 2,
-  },
-  {
-    id: 3,
-    dayName: 'Wednesday',
-    date: '06/14/2023',
-    start: '16',
-    room: 'For The Future (Floor 1st VIP)',
-    longHours: 2,
-  },
-  {
-    id: 4,
-    dayName: 'Wednesday',
-    date: '06/14/2023',
-    start: '13',
-    room: 'Passion (2nd Floor Small)',
-    longHours: 4,
-  },
-  {
-    id: 5,
-    dayName: 'Monday',
-    date: '06/19/2023',
-    start: '08',
-    room: 'Rumah Belajar',
-    longHours: 2,
-  },
-];
 
 @Component({
   selector: 'app-schedule',
@@ -124,7 +83,6 @@ export class ScheduleComponent implements OnInit {
   hours = hour;
   hourHalf = hourHalf;
   roomName = roomName;
-  booked = booked;
 
   // Variable Date
   @Input() inputDate = format(new Date(), 'P');
@@ -134,22 +92,29 @@ export class ScheduleComponent implements OnInit {
   reservApi: any[] = [];
   resourcesApi: any[] = [];
   employeeData: any;
+  employeesKejayan: any;
 
   // Variable
   total: number = 0;
   dateNow = new Date();
 
+  // Params
+  dateParams = this.actRouter.snapshot.queryParams['date'];
+
   constructor(
     private authService: AuthService,
     private router: Router,
+    private actRouter: ActivatedRoute,
     private apiService: ApiService,
     private spinner: NgxSpinnerService
   ) {
-    spinner.show('cahya');
-    forkJoin(apiService.reservGet(), apiService.resourcesGet()).subscribe(
-      ([reserv, resources]) => {
+    forkJoin(apiService.reservGet(), apiService.resourcesGet(), authService.employeesKejayanGet()).subscribe(
+      ([reserv, resources, employeeKejayan]) => {
         this.reservApi = reserv;
         this.resourcesApi = resources;
+        this.employeesKejayan = employeeKejayan;
+        // console.log(this.getEmployeeName(18180));
+        
         this.spinner.hide('cahya');
       }
     );
@@ -157,10 +122,13 @@ export class ScheduleComponent implements OnInit {
     if (this.onAuthCheck()) {
       this.employeeData = authService.getUserData();
     }
-    
+    if (this.dateParams) {
+      this.loopWeekDate(new Date(this.dateParams));
+    } else {
+      this.loopWeekDate(new Date());
+    }
 
-    this.loopWeekDate(new Date());
-    this.isDateTimePast(new Date(), '17:00')
+    // this.isDateTimePast(new Date(), '17:00')
   }
   ngOnInit() {
     // this.inputDate = format(new Date(), 'P');
@@ -287,16 +255,7 @@ export class ScheduleComponent implements OnInit {
       );
     }
   }
-  getUserName(id: any) {
-    let user;
-
-    this.authService.employeesGetById(id).subscribe((data) => {
-      console.log(data);
-
-      user = data;
-    });
-    return user;
-  }
+  
 
   loopWeekDate(date: any) {
     this.arrayDateinWeek.length = 0;
@@ -318,6 +277,7 @@ export class ScheduleComponent implements OnInit {
         dayName: firstDay.toLocaleString('en-us', { weekday: 'long' }),
         full: format(firstDay, 'P'),
         localeString: format(firstDay, 'yyyy-MM-dd'),
+        datefull: format(firstDay, 'MM-dd-yyyy'),
       });
 
       firstDay.setDate(firstDay.getDate() + 1);
@@ -346,15 +306,38 @@ export class ScheduleComponent implements OnInit {
     return new Date(date.setDate(diff));
   }
   nextWeek() {
-    // console.log('next');
-    // console.log(nextDay(new Date(this.arrayDateinWeek[6].full),0) );
-    this.loopWeekDate(nextDay(new Date(this.arrayDateinWeek[6].full), 1));
+    // console.log(this.arrayDateinWeek[6].full);
+    // console.log(nextDay(new Date(this.arrayDateinWeek[6].localeString),1) );
+    this.router.navigate([], {
+      relativeTo: this.actRouter,
+      queryParams: {
+        date: nextDay(new Date(this.arrayDateinWeek[6].datefull), 1),
+      },
+      queryParamsHandling: 'merge', // remove to replace all query params by provided
+    });
+    this.loopWeekDate(
+      nextDay(new Date(this.arrayDateinWeek[6].datefull), 1)
+    );
+  }
+  getEmployeeName(userId:any){
+    let emp
+    return this.employeesKejayan.filter((data:any)=> Number(data.employee_code) == Number(userId))[0]
+    
+    
   }
   previousWeek() {
     // console.log('prev');
-    // console.log(previousDay(new Date(this.arrayDateinWeek[0].full),0));
-
-    this.loopWeekDate(previousDay(new Date(this.arrayDateinWeek[0].full), 1));
+    // console.log(previousDay(new Date(this.arrayDateinWeek[0].datefull),0));
+    this.router.navigate([], {
+      relativeTo: this.actRouter,
+      queryParams: {
+        date: previousDay(new Date(this.arrayDateinWeek[0].datefull), 1),
+      },
+      queryParamsHandling: 'merge', // remove to replace all query params by provided
+    });
+    this.loopWeekDate(
+      previousDay(new Date(this.arrayDateinWeek[0].datefull), 1)
+    );
 
     this.spinner.hide('cahya');
   }
@@ -366,7 +349,6 @@ export class ScheduleComponent implements OnInit {
       hours: time.slice(0, 2),
       minutes: time.slice(3, 5),
     });
-    console.log(datetime);
     this.router.navigate(['/create-reservation'], {
       queryParams: { datetime: datetime, roomId: room },
     });
@@ -377,15 +359,46 @@ export class ScheduleComponent implements OnInit {
     }
     return true;
   }
-  isDateTimePast(date:any, time:any){
-    if (compareAsc(set(new Date(date), {hours: time.slice(0, 2),
-      minutes: time.slice(3, 5),}), new Date()) == -1) {
+  isDateTimePast(date: any, time: any) {
+    // console.log(new Date(date));
+    if (
+      isBefore(set(new Date(date), {
+        hours: time.slice(0, 2),
+        minutes: time.slice(3, 5),
+      }),
+      new Date())
+      // compareAsc(
+      //   set(new Date(date), {
+      //     hours: time.slice(0, 2),
+      //     minutes: time.slice(3, 5),
+      //   }),
+      //   new Date()
+      // ) == -1
+    ) {
+      // console.log(set(new Date(date), {
+      //   hours: time.slice(0, 2),
+      //   minutes: time.slice(3, 5),
+      // }))
+      
+      
       return true;
     } else {
+      // console.log(set(new Date(date), {
+      //   hours: time.slice(0, 2),
+      //   minutes: time.slice(3, 5),
+      // }))
+      
+      
       return false;
     }
-    console.log(compareAsc(set(new Date(date), {hours: time.slice(0, 2),
-      minutes: time.slice(3, 5),}), new Date()));
-    
+    console.log(
+      compareAsc(
+        set(new Date(date), {
+          hours: time.slice(0, 2),
+          minutes: time.slice(3, 5),
+        }),
+        new Date()
+      )
+    );
   }
 }

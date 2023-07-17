@@ -11,7 +11,7 @@ import {
   addDays,
   formatISO,
 } from 'date-fns';
-import { forkJoin } from 'rxjs';
+import { elementAt, forkJoin } from 'rxjs';
 import { AlertType } from 'src/app/services/alert/alert.model';
 import { AlertService } from 'src/app/services/alert/alert.service';
 import { ApiService } from 'src/app/services/api.service';
@@ -71,6 +71,8 @@ export class CreateComponent {
     private alertService: AlertService,
     private authService: AuthService
   ) {
+    // console.log(this.datetimeParams);
+
     this.initialForm();
     forkJoin(apiService.resourcesGet(), apiService.reservGet()).subscribe(
       ([resources, reservAll]) => {
@@ -78,9 +80,9 @@ export class CreateComponent {
         this.reservs = reservAll;
       }
     );
-    console.log(formatISO(new Date(this.datetimeParams)).slice(0, 16));
+    // console.log(formatISO(new Date(this.datetimeParams)).slice(0, 16));
 
-    console.log(new Date(this.datetimeParams).toISOString().slice(0, 16));
+    // console.log(new Date(this.datetimeParams).toISOString().slice(0, 16));
   }
   get f() {
     return this.form.controls;
@@ -96,7 +98,7 @@ export class CreateComponent {
       pocari: [false, Validators.required],
       soyjoy: [false, Validators.required],
       begin: [this.formatedDateTime, Validators.required],
-      end: ['', Validators.required],
+      end: [this.formatedDateTime, Validators.required],
       length: [0, Validators.required],
       repeat: [false, Validators.required],
       repeatWeek: [1, Validators.required],
@@ -141,7 +143,19 @@ export class CreateComponent {
     if (this.isOverlappingTime(body.begin, body.end, body.resourceId)) {
       return;
     }
-
+    console.log(body.begin + ' = ' + body.end);
+    console.log(format(body.begin, 'Pp') == format(body.end, 'Pp'));
+    
+    if (format(body.begin, 'Pp') == format(body.end, 'Pp')) {
+      console.log('in');
+      
+      this.alertService.onCallAlert(
+        'Incorrect Begin & End!',
+        AlertType.Error
+      );
+      return;
+    }
+    
     if (body.repeat) {
       let repeatLength =
         (differenceInWeeks(
@@ -229,6 +243,15 @@ export class CreateComponent {
     }
 
     //
+  }
+  goToSchedule() {
+    // console.log(new Date(this.reserv.begin).toLocaleDateString());
+
+    this.router.navigate(['/schedule'], {
+      queryParams: {
+        date: new Date(format(new Date(this.datetimeParams), 'MM-dd-yyyy')),
+      },
+    });
   }
 
   isOverlappingTime(begin: any, end: any, resourceId: any) {
