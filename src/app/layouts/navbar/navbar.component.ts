@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertType } from 'src/app/services/alert/alert.model';
 import { AlertService } from 'src/app/services/alert/alert.service';
+import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 
 declare global {
@@ -46,12 +47,19 @@ globalThis.age = 18;
   styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent {
-  constructor(private authService: AuthService, private router: Router, private alertService: AlertService) {}
+  userBool = false
+  constructor(public authService: AuthService, private router: Router, private alertService: AlertService) {
+    console.log(this.authService.getUserData());
+    
+  }
   onAuthCheck() {
     if (this.authService.getToken() != null) {
       return false;
     }
     return true;
+  }
+  userDropdown(){
+    this.userBool = !this.userBool
   }
 
   signOut() {

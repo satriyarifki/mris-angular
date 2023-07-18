@@ -53,7 +53,7 @@ export class LoginComponent {
           console.log(err);
           
           if (err.statusText == 'Unauthorized') {
-            console.log('Email or Pass Invalid');
+            console.log('NIK or Pass Invalid');
             this.alertService.onCallAlert(
               'Email or Password Invalid',
               AlertType.Error

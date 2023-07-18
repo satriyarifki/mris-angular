@@ -108,16 +108,18 @@ export class ScheduleComponent implements OnInit {
     private apiService: ApiService,
     private spinner: NgxSpinnerService
   ) {
-    forkJoin(apiService.reservGet(), apiService.resourcesGet(), authService.employeesKejayanGet()).subscribe(
-      ([reserv, resources, employeeKejayan]) => {
-        this.reservApi = reserv;
-        this.resourcesApi = resources;
-        this.employeesKejayan = employeeKejayan;
-        // console.log(this.getEmployeeName(18180));
-        
-        this.spinner.hide('cahya');
-      }
-    );
+    forkJoin(
+      apiService.reservGet(),
+      apiService.resourcesGet(),
+      authService.employeesKejayanGet()
+    ).subscribe(([reserv, resources, employeeKejayan]) => {
+      this.reservApi = reserv;
+      this.resourcesApi = resources;
+      this.employeesKejayan = employeeKejayan;
+      // console.log(this.getEmployeeName(18180));
+
+      this.spinner.hide('cahya');
+    });
 
     if (this.onAuthCheck()) {
       this.employeeData = authService.getUserData();
@@ -135,6 +137,13 @@ export class ScheduleComponent implements OnInit {
   }
   sendTheNewValue(event: any) {
     // console.log(event.srcElement.valueAsDate);
+    this.router.navigate([], {
+      relativeTo: this.actRouter,
+      queryParams: {
+        date: event.srcElement.valueAsDate,
+      },
+      queryParamsHandling: 'merge', // remove to replace all query params by provided
+    });
     this.loopWeekDate(event.srcElement.valueAsDate);
   }
   ColspanLength(date: any, room: any) {
@@ -255,7 +264,6 @@ export class ScheduleComponent implements OnInit {
       );
     }
   }
-  
 
   loopWeekDate(date: any) {
     this.arrayDateinWeek.length = 0;
@@ -315,15 +323,13 @@ export class ScheduleComponent implements OnInit {
       },
       queryParamsHandling: 'merge', // remove to replace all query params by provided
     });
-    this.loopWeekDate(
-      nextDay(new Date(this.arrayDateinWeek[6].datefull), 1)
-    );
+    this.loopWeekDate(nextDay(new Date(this.arrayDateinWeek[6].datefull), 1));
   }
-  getEmployeeName(userId:any){
-    let emp
-    return this.employeesKejayan.filter((data:any)=> Number(data.employee_code) == Number(userId))[0]
-    
-    
+  getEmployeeName(userId: any) {
+    let emp;
+    return this.employeesKejayan.filter(
+      (data: any) => Number(data.employee_code) == Number(userId)
+    )[0];
   }
   previousWeek() {
     // console.log('prev');
@@ -362,11 +368,13 @@ export class ScheduleComponent implements OnInit {
   isDateTimePast(date: any, time: any) {
     // console.log(new Date(date));
     if (
-      isBefore(set(new Date(date), {
-        hours: time.slice(0, 2),
-        minutes: time.slice(3, 5),
-      }),
-      new Date())
+      isBefore(
+        set(new Date(date), {
+          hours: time.slice(0, 2),
+          minutes: time.slice(3, 5),
+        }),
+        new Date()
+      )
       // compareAsc(
       //   set(new Date(date), {
       //     hours: time.slice(0, 2),
@@ -379,16 +387,14 @@ export class ScheduleComponent implements OnInit {
       //   hours: time.slice(0, 2),
       //   minutes: time.slice(3, 5),
       // }))
-      
-      
+
       return true;
     } else {
       // console.log(set(new Date(date), {
       //   hours: time.slice(0, 2),
       //   minutes: time.slice(3, 5),
       // }))
-      
-      
+
       return false;
     }
     console.log(
