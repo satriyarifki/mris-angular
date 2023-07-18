@@ -1,5 +1,5 @@
 <div
-  class="flex flex-wrap relative justify-center bg-white shadow-lg rounded-xl w-full my-4 md:w-11/12 mx-auto"
+  class="flex flex-wrap relative justify-center font-quicksand font-medium bg-white shadow-lg rounded-xl w-full my-4 md:w-11/12 mx-auto"
 >
   <div class="absolute right-0 h-fit flex justify-between">
     <a
@@ -74,12 +74,12 @@
     </div>
     <div class="flex flex-wrap space-x-3">
       <div
-        class="w-1/5 flex items-center justify-between p-3 bg-purple-100 rounded"
+        class="w-1/5 flex items-center justify-between p-3 bg-green-100 rounded"
       >
         <h1 class="font-medium">Resources</h1>
       </div>
       <div
-        class="grow flex items-center justify-between p-3 bg-purple-100 rounded"
+        class="grow flex items-center justify-between p-3 bg-green-100 rounded"
       >
         <h1 class="">
           {{ filterResourcesById(reserv?.resourceId)?.roomName }}
@@ -88,12 +88,12 @@
     </div>
     <div class="flex flex-wrap space-x-3">
       <div
-        class="w-1/5 flex items-center justify-between p-3 bg-yellow-100 rounded"
+        class="w-1/5 flex items-center justify-between p-3 bg-green-100 rounded"
       >
         <h1 class="font-medium">Accessories</h1>
       </div>
       <div
-        class="grow flex items-center justify-between p-3 bg-yellow-100 rounded"
+        class="grow flex items-center justify-between p-3 bg-green-100 rounded"
       >
         <ul class="flex flex-col sm:flex-row">
           <li
@@ -242,7 +242,7 @@
         <h1 class="font-medium">Begin</h1>
       </div>
       <div
-        class="grow flex items-center justify-between p-2 bg-cyan-100 rounded"
+        class="grow flex items-center justify-center p-2 bg-cyan-100 rounded"
       >
         <h1 class="">{{ reserv?.begin | date : "medium" }}</h1>
       </div>
@@ -253,7 +253,7 @@
         <h1 class="font-medium">End</h1>
       </div>
       <div
-        class="grow flex items-center justify-between p-2 bg-cyan-100 rounded"
+        class="grow flex items-center justify-center p-2 bg-cyan-100 rounded"
       >
         <h1 class="">{{ reserv?.end | date : "medium" }}</h1>
       </div>
@@ -296,24 +296,24 @@
     <br />
     <div class="flex flex-wrap space-x-3">
       <div
-        class="w-1/5 flex items-center justify-between p-3 bg-cyan-100 rounded"
+        class="w-1/5 flex items-center justify-between p-3 bg-purple-100 rounded"
       >
         <h1 class="font-medium">Tittle</h1>
       </div>
       <div
-        class="grow flex items-center justify-between p-3 bg-cyan-100 rounded"
+        class="grow flex items-center justify-between p-3 bg-purple-100 rounded"
       >
         <h1 class="">{{ reserv?.title }}</h1>
       </div>
     </div>
     <div class="flex flex-wrap space-x-3">
       <div
-        class="w-1/5 flex items-center justify-between p-3 bg-cyan-100 rounded"
+        class="w-1/5 flex items-center justify-between p-3 bg-purple-100 rounded"
       >
         <h1 class="font-medium">Description</h1>
       </div>
       <div
-        class="grow flex items-center justify-between p-3 bg-cyan-100 rounded"
+        class="grow flex items-center justify-between p-3 bg-purple-100 rounded"
       >
         <h1 class="">{{ reserv?.description }}</h1>
       </div>

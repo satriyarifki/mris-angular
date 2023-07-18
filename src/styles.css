@@ -3,5 +3,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url("./assets/fonts/manrope/manrope.css");
+@import url("./assets/fonts/font.css");
+@import url("./assets/fonts/quicksand/quicksand.css");
+
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

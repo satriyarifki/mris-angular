@@ -5,6 +5,10 @@ module.exports = {
   ],
   theme: {
     extend: {},
+    fontFamily: {
+      manrope: ["Manrope"],
+      quicksand: ["Quicksand"],
+    },
   },
   plugins: [],
 };
