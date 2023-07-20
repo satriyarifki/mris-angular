@@ -51,11 +51,11 @@ export class LoginComponent {
         },
         (err) => {
           console.log(err);
-          
+
           if (err.statusText == 'Unauthorized') {
             console.log('NIK or Pass Invalid');
             this.alertService.onCallAlert(
-              'Email or Password Invalid',
+              'NIK or Password Invalid',
               AlertType.Error
             );
           } else {
