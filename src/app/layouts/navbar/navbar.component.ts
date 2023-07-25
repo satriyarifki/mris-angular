@@ -49,7 +49,7 @@ globalThis.age = 18;
 export class NavbarComponent {
   userBool = false
   constructor(public authService: AuthService, private router: Router, private alertService: AlertService) {
-    console.log(this.authService.getUserData());
+    // console.log(this.authService.getUserData());
     
   }
   onAuthCheck() {

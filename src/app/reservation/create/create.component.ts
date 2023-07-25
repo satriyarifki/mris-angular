@@ -143,8 +143,8 @@ export class CreateComponent {
     if (this.isOverlappingTime(body.begin, body.end, body.resourceId)) {
       return;
     }
-    console.log(body.begin + ' = ' + body.end);
-    console.log(format(body.begin, 'Pp') == format(body.end, 'Pp'));
+    // console.log(body.begin + ' = ' + body.end);
+    // console.log(format(body.begin, 'Pp') == format(body.end, 'Pp'));
     
     if (format(body.begin, 'Pp') == format(body.end, 'Pp')) {
       console.log('in');
