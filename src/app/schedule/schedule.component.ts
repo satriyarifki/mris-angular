@@ -108,18 +108,24 @@ export class ScheduleComponent implements OnInit {
     private apiService: ApiService,
     private spinner: NgxSpinnerService
   ) {
+    this.spinner.show('cahya');
     forkJoin(
       apiService.reservGet(),
       apiService.resourcesGet(),
       authService.employeesKejayanGet()
-    ).subscribe(([reserv, resources, employeeKejayan]) => {
-      this.reservApi = reserv;
-      this.resourcesApi = resources;
-      this.employeesKejayan = employeeKejayan;
-      // console.log(this.getEmployeeName(18180));
+    ).subscribe(
+      ([reserv, resources, employeeKejayan]) => {
+        this.reservApi = reserv;
+        this.resourcesApi = resources;
+        this.employeesKejayan = employeeKejayan;
+        // console.log(this.getEmployeeName(18180));
 
-      this.spinner.hide('cahya');
-    });
+        this.spinner.hide('cahya');
+      },
+      (err) => {
+        this.spinner.hide('cahya');
+      }
+    );
 
     if (this.onAuthCheck()) {
       this.employeeData = authService.getUserData();
@@ -345,7 +351,7 @@ export class ScheduleComponent implements OnInit {
       previousDay(new Date(this.arrayDateinWeek[0].datefull), 1)
     );
 
-    this.spinner.hide('cahya');
+    // this.spinner.hide('cahya');
   }
   button(id: any) {
     this.router.navigate(['/view-reservation/', id]);
