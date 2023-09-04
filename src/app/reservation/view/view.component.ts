@@ -30,18 +30,17 @@ export class ViewComponent {
     private authService: AuthService,
     private alertService: AlertService
   ) {
-    console.log();
     forkJoin(
       apiService.reservGetById(this.idResv),
       apiService.resourcesGet(),
       apiService.accessoriesGetById(this.idResv)
     ).subscribe(([reservById, resources, accessories]) => {
-      console.log(
-        authService.getUserData() == null ||
-          (authService.getUserData()?.level > 5 &&
-            Number(authService.getUserData()?.employee_code) !=
-              Number(reservById?.userId))
-      );
+      // console.log(
+      //   authService.getUserData() == null ||
+      //     (authService.getUserData()?.level > 5 &&
+      //       Number(authService.getUserData()?.employee_code) !=
+      //         Number(reservById?.userId))
+      // );
 
       if (
         reservById == null ||
@@ -51,11 +50,11 @@ export class ViewComponent {
               Number(authService.getUserData()?.employee_code) !=
                 Number(reservById?.userId))))
       ) {
-        console.log(
-          authService.getUserData()?.level > 5 ||
-            Number(authService.getUserData()?.employee_code) ==
-              Number(reservById?.userId)
-        );
+        // console.log(
+        //   authService.getUserData()?.level > 5 ||
+        //     Number(authService.getUserData()?.employee_code) ==
+        //       Number(reservById?.userId)
+        // );
 
         this.router.navigate(['/schedule']);
       }
@@ -78,7 +77,7 @@ export class ViewComponent {
     return false;
   }
   goToSchedule(){
-    console.log(new Date(this.reserv.begin).toLocaleDateString());
+    // console.log(new Date(this.reserv.begin).toLocaleDateString());
     
     this.router.navigate(['/schedule' ], {
       queryParams: { date: new Date(format(new Date(this.reserv.begin), 'MM-dd-yyyy'))},
@@ -91,11 +90,11 @@ export class ViewComponent {
     this.deleteAlertBool = false;
   }
   deleteReserv(id: any) {
-    console.log('test');
+    // console.log('test');
 
     this.apiService.reservDelete(id).subscribe(
       (data) => {
-        console.log(data);
+        // console.log(data);
         this.closeDeleteAlert();
         this.alertService.onCallAlert('Delete Successfull!', AlertType.Success);
       },

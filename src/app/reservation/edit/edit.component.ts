@@ -48,12 +48,12 @@ export class EditComponent {
       apiService.accessoriesGetById(this.idResv),
       apiService.reservGet()
     ).subscribe(([reservById, resources, accessories, reservs]) => {
-      console.log(
-        authService.getUserData() == null ||
-          (authService.getUserData()?.level > 5 &&
-            Number(authService.getUserData()?.employee_code) !=
-              Number(reservById?.userId))
-      );
+      // console.log(
+      //   authService.getUserData() == null ||
+      //     (authService.getUserData()?.level > 5 &&
+      //       Number(authService.getUserData()?.employee_code) !=
+      //         Number(reservById?.userId))
+      // );
 
       if (
         reservById == null ||
@@ -63,22 +63,22 @@ export class EditComponent {
               Number(authService.getUserData()?.employee_code) !=
                 Number(reservById?.userId))))
       ) {
-        console.log(
-          authService.getUserData()?.level > 5 ||
-            Number(authService.getUserData()?.employee_code) ==
-              Number(reservById?.userId)
-        );
+        // console.log(
+        //   authService.getUserData()?.level > 5 ||
+        //     Number(authService.getUserData()?.employee_code) ==
+        //       Number(reservById?.userId)
+        // );
 
         this.router.navigate(['/']);
       }
-      console.log(resources);
+      // console.log(resources);
 
       this.reserv = reservById;
       this.reservs = reservs;
       this.resources = resources;
       this.accessories = accessories;
-      console.log(formatISO(new Date(this.reserv.begin)).slice(0, 16));
-      console.log(utcToZonedTime(reservById.begin, 'Asia/Jakarta'));
+      // console.log(formatISO(new Date(this.reserv.begin)).slice(0, 16));
+      // console.log(utcToZonedTime(reservById.begin, 'Asia/Jakarta'));
 
       this.initialForm();
       authService.employeesGetById(this.reserv?.userId).subscribe((data) => {
@@ -152,7 +152,7 @@ export class EditComponent {
       (data) => {
         this.apiService.accessoriesUpdate(this.idResv, bodyAcs).subscribe(
           (elem) => {
-            console.log(elem);
+            // console.log(elem);
             this.alertService.onCallAlert(
               'Update Reservation Success!',
               AlertType.Success
@@ -176,7 +176,7 @@ export class EditComponent {
   }
   isOverlappingTime(begin: any, end: any, resourceId: any) {
     let bool = false;
-    console.log(this.reserv);
+    // console.log(this.reserv);
 
     let reservation = this.reservs.filter(
       (data: any) =>
@@ -210,7 +210,7 @@ export class EditComponent {
         // }
       }
     } catch (error) {
-      console.log('hh' + error);
+      // console.log('hh' + error);
       bool = true;
       this.alertService.onCallAlert(
         'Fill Begin and End Correctly!',

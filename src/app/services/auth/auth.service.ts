@@ -51,7 +51,10 @@ export class AuthService {
     window.sessionStorage.removeItem(USER_DATA_KEY);
     window.sessionStorage.setItem(USER_KEY, JSON.stringify(user));
     this.employeesGetById(this.getUser().lg_nik).subscribe((data) => {
+      console.log(data);
+      
       window.sessionStorage.setItem(USER_DATA_KEY, JSON.stringify(data[0]));
+    },(err)=>{console.log(err);
     });
     
   }
@@ -66,7 +69,8 @@ export class AuthService {
   }
   public getUserData(): any {
     const user = window.sessionStorage.getItem(USER_DATA_KEY);
-   
+    // console.log(user);
+    
     if (user) {
       return JSON.parse(user);
     }

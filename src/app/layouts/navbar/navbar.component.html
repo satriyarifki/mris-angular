@@ -50,7 +50,19 @@
               />
             </svg>
           </button> -->
-
+          <a
+            href="http://192.168.9.47/meetcalendar/"
+            routerLinkActive="router-link-active"
+            class="relative cursor-pointer inline-flex mx-4 items-center justify-start px-5 max-[560px]:px-3 text-sm py-1.5 overflow-hidden font-medium transition-all bg-[#f6b26e] rounded-md hover:bg-white group"
+          >
+            <span
+              class="absolute inset-0 border-0 group-hover:border-[25px] ease-linear duration-100 transition-all border-white "
+            ></span>
+            <span
+              class="relative w-full text-left text-white transition-colors duration-200 ease-in-out group-hover:text-[#f6b26e]  rounded-md"
+              >Meeting Calendar</span
+            >
+          </a>
           <button
             *ngIf="onAuthCheck()"
             [routerLink]="['/login']"
