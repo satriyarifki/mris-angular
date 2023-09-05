@@ -14,6 +14,7 @@ import {
 } from 'date-fns';
 import { zonedTimeToUtc, utcToZonedTime, format } from 'date-fns-tz';
 import { AlertType } from 'src/app/services/alert/alert.model';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 setDefaultOptions({ locale: es });
 
@@ -32,6 +33,9 @@ export class EditComponent {
   accessories: any;
   employee: any;
 
+  //
+  onProcess= false
+
   //Form
   form!: FormGroup;
   constructor(
@@ -40,8 +44,10 @@ export class EditComponent {
     private apiService: ApiService,
     private formBuilder: FormBuilder,
     private alertService: AlertService,
-    private authService: AuthService
+    private authService: AuthService,
+    private spinner : NgxSpinnerService
   ) {
+    spinner.show()
     forkJoin(
       apiService.reservGetById(this.idResv),
       apiService.resourcesGet(),
@@ -84,7 +90,8 @@ export class EditComponent {
       authService.employeesGetById(this.reserv?.userId).subscribe((data) => {
         this.employee = data[0];
       });
-    });
+      spinner.hide()
+    },(err)=>{spinner.hide()});
   }
   get f() {
     return this.form.controls;
@@ -118,7 +125,9 @@ export class EditComponent {
   }
 
   onSubmit() {
+    this.onProcess = true
     if (this.form.invalid) {
+      this.onProcess = false
       this.alertService.onCallAlert('Fill Blank Inputs!', AlertType.Warning);
       return;
     }
@@ -165,8 +174,10 @@ export class EditComponent {
             );
           }
         );
+        this.onProcess = false
       },
       (er) => {
+        this.onProcess = false
         this.alertService.onCallAlert(
           'Update Reservation Failed!',
           AlertType.Error

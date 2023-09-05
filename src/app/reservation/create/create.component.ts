@@ -11,6 +11,7 @@ import {
   addDays,
   formatISO,
 } from 'date-fns';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { elementAt, forkJoin } from 'rxjs';
 import { AlertType } from 'src/app/services/alert/alert.model';
 import { AlertService } from 'src/app/services/alert/alert.service';
@@ -55,6 +56,7 @@ let hour = [
 export class CreateComponent {
   form!: FormGroup;
   date = new Date();
+  onProcess = false;
   //Params
   datetimeParams = this.actRoutee.snapshot.queryParams['datetime'];
   resourceParams = this.actRoutee.snapshot.queryParams['roomId'];
@@ -69,17 +71,23 @@ export class CreateComponent {
     private apiService: ApiService,
     private formBuilder: FormBuilder,
     private alertService: AlertService,
-    private authService: AuthService
+    private authService: AuthService,
+    private spinner: NgxSpinnerService
   ) {
     // console.log(this.datetimeParams);
-
+    spinner.show();
     this.initialForm();
     forkJoin(apiService.resourcesGet(), apiService.reservGet()).subscribe(
       ([resources, reservAll]) => {
         this.resources = resources;
         this.reservs = reservAll;
+        spinner.hide();
+      },
+      (err) => {
+        spinner.hide();
       }
     );
+
     // console.log(formatISO(new Date(this.datetimeParams)).slice(0, 16));
 
     // console.log(new Date(this.datetimeParams).toISOString().slice(0, 16));
@@ -109,10 +117,11 @@ export class CreateComponent {
     });
   }
   onSubmit() {
+    this.onProcess = true
     if (this.form.invalid) {
-      console.log('fail');
-      console.log(this.f);
-
+      // console.log('fail');
+      // console.log(this.f);
+      this.onProcess = false
       this.alertService.onCallAlert('Fill Blank Inputs!', AlertType.Warning);
       return;
     }
@@ -141,21 +150,19 @@ export class CreateComponent {
       soyjoy: this.f['soyjoy'].value,
     };
     if (this.isOverlappingTime(body.begin, body.end, body.resourceId)) {
+      this.onProcess = false
       return;
     }
     // console.log(body.begin + ' = ' + body.end);
     // console.log(format(body.begin, 'Pp') == format(body.end, 'Pp'));
-    
+
     if (format(body.begin, 'Pp') == format(body.end, 'Pp')) {
-      console.log('in');
-      
-      this.alertService.onCallAlert(
-        'Incorrect Begin & End!',
-        AlertType.Error
-      );
+      // console.log('in');
+      this.onProcess = false
+      this.alertService.onCallAlert('Incorrect Begin & End!', AlertType.Error);
       return;
     }
-    
+
     if (body.repeat) {
       let repeatLength =
         (differenceInWeeks(
@@ -207,6 +214,7 @@ export class CreateComponent {
           }
         );
       }
+      this.onProcess = false
     } else {
       this.apiService.reservPost(body).subscribe(
         (data) => {
@@ -230,10 +238,11 @@ export class CreateComponent {
               );
             }
           );
+          this.onProcess = false
         },
         (err) => {
           // console.log(err);
-
+          this.onProcess = false
           this.alertService.onCallAlert(
             'Booked Reservation Fail!',
             AlertType.Error
@@ -241,6 +250,7 @@ export class CreateComponent {
         }
       );
     }
+    
 
     //
   }

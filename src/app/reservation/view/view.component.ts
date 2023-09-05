@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { format } from 'date-fns';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { forkJoin } from 'rxjs';
 import { AlertType } from 'src/app/services/alert/alert.model';
 import { AlertService } from 'src/app/services/alert/alert.service';
@@ -14,6 +15,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 })
 export class ViewComponent {
   idResv = this.actRouter.snapshot.params['id'];
+  onProcess = false;
 
   // API Variable
   reserv: any;
@@ -28,43 +30,51 @@ export class ViewComponent {
     private router: Router,
     private apiService: ApiService,
     private authService: AuthService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private spinner: NgxSpinnerService
   ) {
+    spinner.show();
     forkJoin(
       apiService.reservGetById(this.idResv),
       apiService.resourcesGet(),
       apiService.accessoriesGetById(this.idResv)
-    ).subscribe(([reservById, resources, accessories]) => {
-      // console.log(
-      //   authService.getUserData() == null ||
-      //     (authService.getUserData()?.level > 5 &&
-      //       Number(authService.getUserData()?.employee_code) !=
-      //         Number(reservById?.userId))
-      // );
-
-      if (
-        reservById == null ||
-        (reservById?.level == 'Confidential' &&
-          (authService.getUserData() == null ||
-            (authService.getUserData()?.level > 5 &&
-              Number(authService.getUserData()?.employee_code) !=
-                Number(reservById?.userId))))
-      ) {
+    ).subscribe(
+      ([reservById, resources, accessories]) => {
         // console.log(
-        //   authService.getUserData()?.level > 5 ||
-        //     Number(authService.getUserData()?.employee_code) ==
-        //       Number(reservById?.userId)
+        //   authService.getUserData() == null ||
+        //     (authService.getUserData()?.level > 5 &&
+        //       Number(authService.getUserData()?.employee_code) !=
+        //         Number(reservById?.userId))
         // );
 
-        this.router.navigate(['/schedule']);
+        if (
+          reservById == null ||
+          (reservById?.level == 'Confidential' &&
+            (authService.getUserData() == null ||
+              (authService.getUserData()?.level > 5 &&
+                Number(authService.getUserData()?.employee_code) !=
+                  Number(reservById?.userId))))
+        ) {
+          // console.log(
+          //   authService.getUserData()?.level > 5 ||
+          //     Number(authService.getUserData()?.employee_code) ==
+          //       Number(reservById?.userId)
+          // );
+
+          this.router.navigate(['/schedule']);
+        }
+        this.reserv = reservById;
+        this.resources = resources;
+        this.accessories = accessories;
+        authService.employeesGetById(this.reserv?.userId).subscribe((data) => {
+          this.employee = data[0];
+        });
+        spinner.hide();
+      },
+      (err) => {
+        spinner.hide();
       }
-      this.reserv = reservById;
-      this.resources = resources;
-      this.accessories = accessories;
-      authService.employeesGetById(this.reserv?.userId).subscribe((data) => {
-        this.employee = data[0];
-      });
-    });
+    );
   }
 
   filterResourcesById(id: any) {
@@ -76,12 +86,14 @@ export class ViewComponent {
     }
     return false;
   }
-  goToSchedule(){
+  goToSchedule() {
     // console.log(new Date(this.reserv.begin).toLocaleDateString());
-    
-    this.router.navigate(['/schedule' ], {
-      queryParams: { date: new Date(format(new Date(this.reserv.begin), 'MM-dd-yyyy'))},
-    } )
+
+    this.router.navigate(['/schedule'], {
+      queryParams: {
+        date: new Date(format(new Date(this.reserv.begin), 'MM-dd-yyyy')),
+      },
+    });
   }
   callDeleteAlert() {
     this.deleteAlertBool = true;
@@ -91,19 +103,21 @@ export class ViewComponent {
   }
   deleteReserv(id: any) {
     // console.log('test');
-
+    this.onProcess = true;
     this.apiService.reservDelete(id).subscribe(
       (data) => {
         // console.log(data);
         this.closeDeleteAlert();
         this.alertService.onCallAlert('Delete Successfull!', AlertType.Success);
+        this.router.navigate(['/schedule']);
       },
       (er) => {
         this.closeDeleteAlert();
+        this.onProcess = false;
       },
       () => {
+        this.onProcess = false;
         this.closeDeleteAlert();
-        this.router.navigate(['/schedule']);
       }
     );
 

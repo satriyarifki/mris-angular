@@ -14,6 +14,7 @@ export class LoginComponent {
   form!: FormGroup;
   showPassword = false;
   submitted = false;
+  onProcess = false;
 
   constructor(
     private authService: AuthService,
@@ -33,8 +34,11 @@ export class LoginComponent {
 
   onSubmit() {
     this.submitted = true;
+    this.onProcess = true
     if (this.form.invalid) {
+      this.onProcess = false;
       return;
+      
     }
     this.authService
       .login(this.f['nik'].value, this.f['password'].value)
@@ -69,10 +73,12 @@ export class LoginComponent {
           // this.isLoginFailed = true;
           // this.submitted = false;
           this.submitted = false;
+          this.onProcess = false;
           this.f['password'].setValue('');
           // this.form.setValue({ email: '', password: '' });
         },
         () => {
+          this.onProcess = false
           this.submitted = false;
         }
       );
