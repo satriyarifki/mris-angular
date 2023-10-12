@@ -57,6 +57,7 @@ export class CreateComponent {
   form!: FormGroup;
   date = new Date();
   onProcess = false;
+  hourLength = 0;
   //Params
   datetimeParams = this.actRoutee.snapshot.queryParams['datetime'];
   resourceParams = this.actRoutee.snapshot.queryParams['roomId'];
@@ -116,12 +117,20 @@ export class CreateComponent {
       description: ['', Validators.required],
     });
   }
+
+  changeHour() {
+    console.log(new Date(this.f['begin'].value));
+    console.log(this.f['end'].value);
+    console.log();
+    this.hourLength = differenceInHours(new Date(this.f['end'].value),new Date(this.f['begin'].value))
+  }
+
   onSubmit() {
-    this.onProcess = true
+    this.onProcess = true;
     if (this.form.invalid) {
       // console.log('fail');
       // console.log(this.f);
-      this.onProcess = false
+      this.onProcess = false;
       this.alertService.onCallAlert('Fill Blank Inputs!', AlertType.Warning);
       return;
     }
@@ -150,7 +159,7 @@ export class CreateComponent {
       soyjoy: this.f['soyjoy'].value,
     };
     if (this.isOverlappingTime(body.begin, body.end, body.resourceId)) {
-      this.onProcess = false
+      this.onProcess = false;
       return;
     }
     // console.log(body.begin + ' = ' + body.end);
@@ -158,7 +167,7 @@ export class CreateComponent {
 
     if (format(body.begin, 'Pp') == format(body.end, 'Pp')) {
       // console.log('in');
-      this.onProcess = false
+      this.onProcess = false;
       this.alertService.onCallAlert('Incorrect Begin & End!', AlertType.Error);
       return;
     }
@@ -214,7 +223,7 @@ export class CreateComponent {
           }
         );
       }
-      this.onProcess = false
+      this.onProcess = false;
     } else {
       this.apiService.reservPost(body).subscribe(
         (data) => {
@@ -238,11 +247,11 @@ export class CreateComponent {
               );
             }
           );
-          this.onProcess = false
+          this.onProcess = false;
         },
         (err) => {
           // console.log(err);
-          this.onProcess = false
+          this.onProcess = false;
           this.alertService.onCallAlert(
             'Booked Reservation Fail!',
             AlertType.Error
@@ -250,7 +259,6 @@ export class CreateComponent {
         }
       );
     }
-    
 
     //
   }

@@ -226,6 +226,7 @@
           formControlName="begin"
           type="datetime-local"
           step="1800"
+          (change)="changeHour()"
           class="py-2 px-2 grow border border-gray-300 rounded-md text-md focus:border-blue-500 ring:border-blue-500 outline-none"
         />
       </div>
@@ -244,32 +245,33 @@
           formControlName="end"
           type="datetime-local"
           step="1800"
+          (change)="changeHour()"
           class="py-2 px-2 grow border border-gray-300 rounded-md text-md focus:border-blue-500 ring:border-blue-500 outline-none"
         />
       </div>
     </div>
     <div class="flex flex-wrap justify-between">
-      <!-- <div class="w-[45%] flex space-x-2">
+      <div class="w-[49%] flex space-x-2">
         <div
-          class="w-2/5 flex items-center justify-between p-2 bg-cyan-100 rounded"
+          class="w-[41%] flex items-center justify-between p-2 bg-cyan-100 rounded"
         >
           <h1 class="font-medium">Reservation Length</h1>
         </div>
         <div class="grow flex items-center justify-center p-2 bg-cyan-100 rounded">
           <div class="flex items-center">
             <input
-              [value]="0"
+              [value]="hourLength"
               type="number"
-              class="py-3 px-3 block w-1/2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500"
+              class="py-3 px-3 block w-1/2 border-gray-200 bg-gray-50 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500"
               placeholder="Input text"
               disabled
             />
-            <h1 class="font-semibold">Hours</h1>
+            <h1 class="font-semibold px-2">Hours</h1>
           </div>
         </div>
-      </div> -->
+      </div>
 
-      <div class="w-[49%] flex space-x-2">
+      <!-- <div class="w-[49%] flex space-x-2">
         <div class="w-[41%] flex items-center justify-start p-2 bg-cyan-100 rounded">
           <h1 class="font-medium">Level</h1>
         </div>
@@ -287,7 +289,7 @@
           </select>
 
         </div>
-      </div>
+      </div> -->
       <div class="w-[49%] flex space-x-2">
         <div class="w-[41%] flex items-center justify-center p-2 bg-cyan-100 rounded">
           <h1 class="font-medium">Repeat</h1>

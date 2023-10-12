@@ -160,6 +160,62 @@
           </tbody>
         </table>
       </div>
+
+      <div
+        class="flex flex-wrap bg-white justify-center items-center space-x-2 py-2"
+      >
+        <a
+          (click)="previousWeek()"
+          class="inline-flex cursor-pointer shadow-md items-center px-4 max-[560px]:px-2 py-2 text-sm font-medium text-[#54086B] bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+        </a>
+        <h1 class="text-lg font-semibold">
+          {{ this.arrayDateinWeek[0].full }} -
+          {{ this.arrayDateinWeek[6].full }}
+        </h1>
+        <a
+          (click)="nextWeek()"
+          class="inline-flex cursor-pointer shadow-md items-center px-4 max-[560px]:px-2 py-2 text-sm font-medium text-[#54086B] bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </a>
+      </div>
+      <div class="w-full flex justify-center pt-1 pb-5">
+        <div class="relative max-w-sm border rounded-md">
+          <input
+            type="date"
+            (input)="sendTheNewValue($event)"
+            class="py-3 px-4 w-full border-gray-400 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </div>

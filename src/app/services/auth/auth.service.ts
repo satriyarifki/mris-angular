@@ -20,6 +20,26 @@ export class AuthService {
   datas:any
   private authUrl = baseApi + 'auth/';
   constructor(private http: HttpClient, private router: Router) {}
+  setCookie(cValue: string, expDays: number) {
+    let date = new Date();
+    date.setTime(date.getTime() + expDays * 24 * 60 * 60 * 1000);
+    const expires = 'expires=' + date.toUTCString();
+    document.cookie = TOKEN_KEY + '=' + cValue + '; ' + expires + '; path=/';
+  }
+  deleteCookie() {
+    document.cookie =
+      TOKEN_KEY + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+  }
+  getCookie() {
+    const name = TOKEN_KEY + '=';
+    const cDecoded = decodeURIComponent(document.cookie); //to be careful
+    const cArr = cDecoded.split('; ');
+    let res;
+    cArr.forEach((val) => {
+      if (val.indexOf(name) === 0) res = val.substring(name.length);
+    });
+    return res;
+  }
   login(nik: string, password: string): Observable<any> {
     return this.http.post(
       this.authUrl + 'login',
@@ -32,35 +52,38 @@ export class AuthService {
   }
 
   signOut(): void {
-    window.sessionStorage.clear();
+    window.localStorage.clear();
+    this.deleteCookie()
     // window.location.reload();
     this.router.navigate(['/']);
   }
 
   public saveToken(token: string): void {
-    window.sessionStorage.removeItem(TOKEN_KEY);
-    window.sessionStorage.setItem(TOKEN_KEY, token);
+    window.localStorage.removeItem(TOKEN_KEY);
+    this.setCookie(token,1)
+    window.localStorage.setItem(TOKEN_KEY, token);
   }
 
   public getToken(): string | null {
-    return window.sessionStorage.getItem(TOKEN_KEY);
+    // return window.localStorage.getItem(TOKEN_KEY);
+    return this.getCookie()!
   }
 
   public saveUser(user: any): void {
-    window.sessionStorage.removeItem(USER_KEY);
-    window.sessionStorage.removeItem(USER_DATA_KEY);
-    window.sessionStorage.setItem(USER_KEY, JSON.stringify(user));
+    window.localStorage.removeItem(USER_KEY);
+    window.localStorage.removeItem(USER_DATA_KEY);
+    window.localStorage.setItem(USER_KEY, JSON.stringify(user));
     this.employeesGetById(this.getUser().lg_nik).subscribe((data) => {
       console.log(data);
       
-      window.sessionStorage.setItem(USER_DATA_KEY, JSON.stringify(data[0]));
+      window.localStorage.setItem(USER_DATA_KEY, JSON.stringify(data[0]));
     },(err)=>{console.log(err);
     });
     
   }
 
   public getUser(): any {
-    const user = window.sessionStorage.getItem(USER_KEY);
+    const user = window.localStorage.getItem(USER_KEY);
     if (user) {
       return JSON.parse(user)[0];
     }
@@ -68,7 +91,7 @@ export class AuthService {
     return {};
   }
   public getUserData(): any {
-    const user = window.sessionStorage.getItem(USER_DATA_KEY);
+    const user = window.localStorage.getItem(USER_DATA_KEY);
     // console.log(user);
     
     if (user) {
