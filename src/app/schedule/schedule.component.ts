@@ -118,7 +118,7 @@ export class ScheduleComponent implements OnInit {
         this.reservApi = reserv;
         this.resourcesApi = resources;
         this.employeesKejayan = employeeKejayan;
-        // console.log(this.getEmployeeName(18180));
+        console.log(this.getEmployeeName(18180));
 
         this.spinner.hide('cahya');
       },

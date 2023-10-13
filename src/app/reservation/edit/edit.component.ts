@@ -8,6 +8,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { es } from 'date-fns/locale';
 import {
   areIntervalsOverlapping,
+  differenceInHours,
   differenceInMinutes,
   formatISO,
   setDefaultOptions,
@@ -35,6 +36,7 @@ export class EditComponent {
 
   //
   onProcess= false
+  hourLength = 0;
 
   //Form
   form!: FormGroup;
@@ -54,12 +56,6 @@ export class EditComponent {
       apiService.accessoriesGetById(this.idResv),
       apiService.reservGet()
     ).subscribe(([reservById, resources, accessories, reservs]) => {
-      // console.log(
-      //   authService.getUserData() == null ||
-      //     (authService.getUserData()?.level > 5 &&
-      //       Number(authService.getUserData()?.employee_code) !=
-      //         Number(reservById?.userId))
-      // );
 
       if (
         reservById == null ||
@@ -69,11 +65,6 @@ export class EditComponent {
               Number(authService.getUserData()?.employee_code) !=
                 Number(reservById?.userId))))
       ) {
-        // console.log(
-        //   authService.getUserData()?.level > 5 ||
-        //     Number(authService.getUserData()?.employee_code) ==
-        //       Number(reservById?.userId)
-        // );
 
         this.router.navigate(['/']);
       }
@@ -83,8 +74,8 @@ export class EditComponent {
       this.reservs = reservs;
       this.resources = resources;
       this.accessories = accessories;
-      // console.log(formatISO(new Date(this.reserv.begin)).slice(0, 16));
-      // console.log(utcToZonedTime(reservById.begin, 'Asia/Jakarta'));
+      console.log(this.reserv);
+      this.hourLength = differenceInHours(new Date(this.reserv.end),new Date(this.reserv.begin))
 
       this.initialForm();
       authService.employeesGetById(this.reserv?.userId).subscribe((data) => {
@@ -185,6 +176,7 @@ export class EditComponent {
       }
     );
   }
+
   isOverlappingTime(begin: any, end: any, resourceId: any) {
     let bool = false;
     // console.log(this.reserv);
@@ -231,5 +223,12 @@ export class EditComponent {
     }
 
     return bool;
+  }
+
+  changeHour() {
+    console.log(new Date(this.f['begin'].value));
+    console.log(this.f['end'].value);
+    console.log();
+    this.hourLength = differenceInHours(new Date(this.f['end'].value),new Date(this.f['begin'].value))
   }
 }
