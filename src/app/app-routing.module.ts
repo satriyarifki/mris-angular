@@ -14,7 +14,7 @@ const routes: Routes = [
   { path: '', redirectTo: 'schedule', pathMatch: 'full' },
   { path: 'schedule', component: ScheduleComponent },
   { path: 'view-reservation/:id', component: ViewComponent },
-  { path: 'edit-reservation/:id', component: EditComponent },
+  { path: 'edit-reservation/:id', component: EditComponent,canActivate: [OnAuthGuard], },
   {
     path: 'create-reservation',
     component: CreateComponent,

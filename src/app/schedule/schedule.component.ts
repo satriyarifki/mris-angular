@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
 import {
   format,
   isYesterday,
@@ -93,6 +93,7 @@ export class ScheduleComponent implements OnInit {
   resourcesApi: any[] = [];
   employeeData: any;
   employeesKejayan: any;
+  filterBookedSave:any
 
   // Variable
   total: number = 0;
@@ -106,7 +107,7 @@ export class ScheduleComponent implements OnInit {
     private router: Router,
     private actRouter: ActivatedRoute,
     private apiService: ApiService,
-    private spinner: NgxSpinnerService
+    public spinner: NgxSpinnerService
   ) {
     this.spinner.show('cahya');
     forkJoin(
@@ -118,7 +119,7 @@ export class ScheduleComponent implements OnInit {
         this.reservApi = reserv;
         this.resourcesApi = resources;
         this.employeesKejayan = employeeKejayan;
-        console.log(this.getEmployeeName(18180));
+        // console.log(this.getEmployeeName(18180));
 
         this.spinner.hide('cahya');
       },
@@ -140,7 +141,31 @@ export class ScheduleComponent implements OnInit {
   }
   ngOnInit() {
     // this.inputDate = format(new Date(), 'P');
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        // Navigation is starting... show a loading spinner perhaps?
+        // blog on that here: ultimatecourses.com/blog/angular-loading-spinners-with-router-events
+        if (event.url.includes('/schedule')) {
+          
+        }
+        
+        
+      }
+      if (event instanceof NavigationEnd) {
+        // We've finished navigating
+
+        
+      }
+      if (event instanceof NavigationError) {
+        // something went wrong, log the error
+      }
+    });
   }
+
+  // spinnerHide(){
+  //   console.log('done');
+    
+  // }
   sendTheNewValue(event: any) {
     // console.log(event.srcElement.valueAsDate);
     this.router.navigate([], {
@@ -241,34 +266,48 @@ export class ScheduleComponent implements OnInit {
     }
   }
   filterBookedWithHour(day: any, date: any, room: any, start: any) {
-    if (this.onAuthCheck() && this.employeeData?.level <= 5) {
-      // console.log('p');
-      return this.reservApi.filter(
-        (data: any) =>
-          format(new Date(data.end), 'P') == date &&
-          data.resourceId == room &&
-          format(new Date(data.begin), 'HH:mm') == start
-      );
-    } else if (this.onAuthCheck()) {
-      // console.log('pp');
-      return this.reservApi.filter(
-        (data: any) =>
-          format(new Date(data.end), 'P') == date &&
-          data.resourceId == room &&
-          format(new Date(data.begin), 'HH:mm') == start &&
-          (data.level == 'General' ||
-            Number(data.userId) == Number(this.employeeData?.employee_code))
-      );
-    } else {
-      // console.log('pp');
-      return this.reservApi.filter(
-        (data: any) =>
-          format(new Date(data.end), 'P') == date &&
-          data.resourceId == room &&
-          format(new Date(data.begin), 'HH:mm') == start &&
-          data.level == 'General'
-      );
-    }
+    // if (this.onAuthCheck() && this.employeeData?.level <= 5) {
+    //   console.log('p');
+    //   return this.reservApi.filter(
+    //     (data: any) =>
+    //       format(new Date(data.end), 'P') == date &&
+    //       data.resourceId == room &&
+    //       format(new Date(data.begin), 'HH:mm') == start
+    //   );
+    // } else if (this.onAuthCheck()) {
+    //   console.log(date + ' - ' + room + ' - ' + start + ' - ' + day);
+    //   return this.reservApi.filter(
+    //     (data: any) =>
+    //       format(new Date(data.end), 'P') == date &&
+    //       data.resourceId == room &&
+    //       format(new Date(data.begin), 'HH:mm') == start &&
+    //       (data.level == 'General' ||
+    //         Number(data.userId) == Number(this.employeeData?.employee_code))
+    //   );
+    // } else {
+    //   // console.log('pp');
+    //   return this.reservApi.filter(
+    //     (data: any) =>
+    //       format(new Date(data.end), 'P') == date &&
+    //       data.resourceId == room &&
+    //       format(new Date(data.begin), 'HH:mm') == start &&
+    //       data.level == 'General'
+    //   );
+    // }
+    // console.log(date + ' - ' + room + ' - ' + start + ' - ' + day);
+    return this.reservApi.filter(
+      (data: any) =>
+        format(new Date(data.end), 'P') == date &&
+        data.resourceId == room &&
+        format(new Date(data.begin), 'HH:mm') == start
+    );
+  }
+  
+  saveFilterBooked(parms:any){
+    this.filterBookedSave = this.filterBookedWithHour(parms.day,parms.date,parms.room,parms.start)
+    // console.log(this.filterBookedSave);
+    
+    
   }
 
   loopWeekDate(date: any) {
@@ -319,10 +358,9 @@ export class ScheduleComponent implements OnInit {
 
     return new Date(date.setDate(diff));
   }
-  nextWeek() {
-    // console.log(this.arrayDateinWeek[6].full);
-    // console.log(nextDay(new Date(this.arrayDateinWeek[6].localeString),1) );
-    this.router.navigate([], {
+  async nextWeek() {
+    this.spinner.show('cahya')
+    await this.router.navigate([], {
       relativeTo: this.actRouter,
       queryParams: {
         date: nextDay(new Date(this.arrayDateinWeek[6].datefull), 1),
@@ -330,6 +368,8 @@ export class ScheduleComponent implements OnInit {
       queryParamsHandling: 'merge', // remove to replace all query params by provided
     });
     this.loopWeekDate(nextDay(new Date(this.arrayDateinWeek[6].datefull), 1));
+    await this.spinner.hide('cahya')
+    
   }
   getEmployeeName(userId: any) {
     let emp;
@@ -338,8 +378,7 @@ export class ScheduleComponent implements OnInit {
     )[0];
   }
   previousWeek() {
-    // console.log('prev');
-    // console.log(previousDay(new Date(this.arrayDateinWeek[0].datefull),0));
+    this.spinner.show('cahya')
     this.router.navigate([], {
       relativeTo: this.actRouter,
       queryParams: {
@@ -350,8 +389,7 @@ export class ScheduleComponent implements OnInit {
     this.loopWeekDate(
       previousDay(new Date(this.arrayDateinWeek[0].datefull), 1)
     );
-
-    // this.spinner.hide('cahya');
+    this.spinner.hide('cahya');
   }
   button(id: any) {
     this.router.navigate(['/view-reservation/', id]);

@@ -8,7 +8,7 @@
         <div class="relative max-w-sm border rounded-md">
           <input
             type="date"
-            (input)="sendTheNewValue($event)"
+            (change)="sendTheNewValue($event)"
             class="py-3 px-4 w-full border-gray-400 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
@@ -61,7 +61,7 @@
       </div>
       <div class="overflow-hidden">
         <table
-          *ngFor="let day of arrayDateinWeek"
+          *ngFor="let day of arrayDateinWeek; let la=last"
           class="my-3 min-w-full divide-y rounded-lg divide-gray-400"
         >
           <thead>
@@ -83,7 +83,7 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-300">
-            <tr *ngFor="let room of resourcesApi" class="hover:bg-gray-50">
+            <tr *ngFor="let room of resourcesApi; let last = last" class="hover:bg-gray-50">
               <td
                 class="p-2 whitespace-nowrap text-sm font-medium text-gray-800"
               >
@@ -92,24 +92,20 @@
               <ng-container
                 *ngFor="
                   let item of changeHourArray(day.full, room.id, hourHalf);
-                  let i = index
+                  let i = index;
+                  let l = last
                 "
               >
+              
+              {{saveFilterBooked({ day:day.dayName,
+                date:day.full,
+                room:room.id,
+                start:item})}}
                 <td
                   (click)="
-                    this.filterBookedWithHour(
-                      day.dayName,
-                      day.full,
-                      room.id,
-                      item
-                    ).length != 0
+                  filterBookedWithHour(day.dayName,day.full,room.id,item).length != 0
                       ? button(
-                          this.filterBookedWithHour(
-                            day.dayName,
-                            day.full,
-                            room.id,
-                            item
-                          )[0]?.id
+                        filterBookedWithHour(day.dayName,day.full,room.id,item)[0]?.id
                         )
                       : onAuthCheck()
                       ? !isDateTimePast(day.datefull, item)
@@ -118,50 +114,32 @@
                       : null
                   "
                   [ngClass]="
-                    this.filterBookedWithHour(
-                      day.dayName,
-                      day.full,
-                      room.id,
-                      item
-                    ).length != 0
+                  filterBookedSave.length != 0
                       ? 'bg-blue-300 cursor-pointer hover:bg-blue-400 transition-colors break-all '
                       : isDateTimePast(day.datefull, item)
                       ? 'bg-gray-100'
                       : 'hover:bg-blue-100'
                   "
                   [attr.colspan]="
-                    this.filterBookedWithHour(
-                      day.dayName,
-                      day.full,
-                      room.id,
-                      item
-                    ).length != 0
-                      ? this.filterBookedWithHour(
-                          day.dayName,
-                          day.full,
-                          room.id,
-                          item
-                        )[0].length * 2
+                  filterBookedSave.length != 0
+                      ? filterBookedSave[0].length * 2
                       : 1
                   "
                   class="px-1 text-xs text-gray-800 border-2 border-gray-200 w-[2.25%]"
                 >
                   {{
-                    this.filterBookedWithHour(
-                      day.dayName,
-                      day.full,
-                      room.id,
-                      item
-                    )[0]?.title
+                    filterBookedSave[0]?.title
                   }}
+                  
                 </td>
+                
               </ng-container>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <div
+      <!-- <div
         class="flex flex-wrap bg-white justify-center items-center space-x-2 py-2"
       >
         <a
@@ -206,16 +184,16 @@
             />
           </svg>
         </a>
-      </div>
-      <div class="w-full flex justify-center pt-1 pb-5">
+      </div> -->
+      <!-- <div class="w-full flex justify-center pt-1 pb-5">
         <div class="relative max-w-sm border rounded-md">
           <input
             type="date"
-            (input)="sendTheNewValue($event)"
+            (change)="sendTheNewValue($event)"
             class="py-3 px-4 w-full border-gray-400 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </div>
