@@ -59,9 +59,31 @@
           </svg>
         </a>
       </div>
+      <div
+        class="w-[30vw] mx-auto flex justify-center items-center gap-x-3 text-sm font-manrope pt-2"
+      >
+        <div class="flex justify-center items-center">
+          <div
+            class="h-4 w-4 bg-white rounded-md border border-slate-300 mx-1.5"
+          ></div>
+          <h1 class="text-gray-800">Available</h1>
+        </div>
+        <div class="flex justify-center items-center">
+          <div
+            class="h-4 w-4 bg-gray-100 rounded-md border border-slate-300 mx-1.5"
+          ></div>
+          <h1 class="text-gray-800">Past</h1>
+        </div>
+        <div class="flex justify-center items-center">
+          <div
+            class="h-4 w-4 bg-blue-300 rounded-md border border-slate-300 mx-1.5"
+          ></div>
+          <h1 class="text-gray-800">Reserved</h1>
+        </div>
+      </div>
       <div class="overflow-hidden">
         <table
-          *ngFor="let day of arrayDateinWeek; let la=last"
+          *ngFor="let day of arrayDateinWeek; let la = last"
           class="my-3 min-w-full divide-y rounded-lg divide-gray-400"
         >
           <thead>
@@ -83,29 +105,45 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-300">
-            <tr *ngFor="let room of resourcesApi; let last = last" class="hover:bg-gray-50">
+            <tr
+              *ngFor="let room of resourcesApi; let last = last"
+              class="hover:bg-gray-50"
+            >
               <td
                 class="p-2 whitespace-nowrap text-sm font-medium text-gray-800"
               >
-                {{ room.roomName }}
+                {{
+                  room.roomName +
+                    changeHourArray(day.full, room.id, hourHalf).length
+                }}
               </td>
               <ng-container
                 *ngFor="
                   let item of changeHourArray(day.full, room.id, hourHalf);
                   let i = index;
-                  let l = last
+                  let l = last;
+                  let c = count
                 "
               >
-              
-              {{saveFilterBooked({ day:day.dayName,
-                date:day.full,
-                room:room.id,
-                start:item})}}
+                {{
+                  saveFilterBooked({
+                    day: day.dayName,
+                    date: day.full,
+                    room: room.id,
+                    start: item
+                  })
+                }}
                 <td
                   (click)="
-                  filterBookedWithHour(day.dayName,day.full,room.id,item).length != 0
+                    filterBookedWithHour(day.dayName, day.full, room.id, item)
+                      .length != 0
                       ? button(
-                        filterBookedWithHour(day.dayName,day.full,room.id,item)[0]?.id
+                          filterBookedWithHour(
+                            day.dayName,
+                            day.full,
+                            room.id,
+                            item
+                          )[0]?.id
                         )
                       : onAuthCheck()
                       ? !isDateTimePast(day.datefull, item)
@@ -114,32 +152,35 @@
                       : null
                   "
                   [ngClass]="
-                  filterBookedSave.length != 0
+                    filterBookedSave.length != 0
+                      ? 'bg-blue-300 cursor-pointer hover:bg-blue-400 transition-colors break-all '
+                      : c == 1 || (i == 0 && formatDate(this.filterReserv(day.full, room.id)[0]?.begin) != day.full && this.filterReserv(day.full, room.id)[0]?.begin != null)
                       ? 'bg-blue-300 cursor-pointer hover:bg-blue-400 transition-colors break-all '
                       : isDateTimePast(day.datefull, item)
                       ? 'bg-gray-100'
-                      : 'hover:bg-blue-100'
+                      : 'hover:bg-blue-50 cursor-pointer'
                   "
                   [attr.colspan]="
-                  filterBookedSave.length != 0
-                      ? filterBookedSave[0].length * 2
-                      : 1
+                    filterBookedSave.length != 0
+                      ? filterBookedSave[0].length * 2 > ((c-1)-i) ? filterBookedSave[0].length * 2 : filterBookedSave[0].length * 2
+                      : c == 1? 28 : i == 0 && formatDate(this.filterReserv(day.full, room.id)[0]?.begin) != day.full ? (28-c+1) : 1
                   "
                   class="px-1 text-xs text-gray-800 border-2 border-gray-200 w-[2.25%]"
                 >
                   {{
-                    filterBookedSave[0]?.title
+                    c == 1 || (i == 0 &&formatDate(this.filterReserv(day.full, room.id)[0]?.begin) != day.full)
+                      ? this.filterReserv(day.full, room.id)[0]?.title
+                      : filterBookedSave[0]?.title
                   }}
-                  
+                  <!-- {{ item }} -->
                 </td>
-                
               </ng-container>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <!-- <div
+      <div
         class="flex flex-wrap bg-white justify-center items-center space-x-2 py-2"
       >
         <a
@@ -184,8 +225,8 @@
             />
           </svg>
         </a>
-      </div> -->
-      <!-- <div class="w-full flex justify-center pt-1 pb-5">
+      </div>
+      <div class="w-full flex justify-center pt-1 pb-5">
         <div class="relative max-w-sm border rounded-md">
           <input
             type="date"
@@ -193,7 +234,7 @@
             class="py-3 px-4 w-full border-gray-400 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
-      </div> -->
+      </div>
     </div>
   </div>
 </div>

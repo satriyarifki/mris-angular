@@ -1,5 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  NavigationError,
+  NavigationStart,
+  Router,
+} from '@angular/router';
 import {
   format,
   isYesterday,
@@ -11,6 +17,7 @@ import {
   set,
   compareAsc,
   isBefore,
+  isWithinInterval,
 } from 'date-fns';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { forkJoin } from 'rxjs';
@@ -93,7 +100,7 @@ export class ScheduleComponent implements OnInit {
   resourcesApi: any[] = [];
   employeeData: any;
   employeesKejayan: any;
-  filterBookedSave:any
+  filterBookedSave: any;
 
   // Variable
   total: number = 0;
@@ -146,15 +153,10 @@ export class ScheduleComponent implements OnInit {
         // Navigation is starting... show a loading spinner perhaps?
         // blog on that here: ultimatecourses.com/blog/angular-loading-spinners-with-router-events
         if (event.url.includes('/schedule')) {
-          
         }
-        
-        
       }
       if (event instanceof NavigationEnd) {
         // We've finished navigating
-
-        
       }
       if (event instanceof NavigationError) {
         // something went wrong, log the error
@@ -164,7 +166,7 @@ export class ScheduleComponent implements OnInit {
 
   // spinnerHide(){
   //   console.log('done');
-    
+
   // }
   sendTheNewValue(event: any) {
     // console.log(event.srcElement.valueAsDate);
@@ -224,46 +226,104 @@ export class ScheduleComponent implements OnInit {
       // data.forEach((element) => {
       //   hour.splice(hour.indexOf(element.start) + 1, element.longHours * 2 - 1);
       // });
-      data.forEach((element) => {
-        // console.log(new Date(element.begin).toLocaleString());
-
+      if (format(new Date(data[0].begin), 'P') != date && format(new Date(data[0].end), 'P') == date) {
+        // console.log(hour.indexOf(String(format(new Date(data[0].end), 'HH:mm'))));
+        
+        // console.log(format(new Date(data[0].begin), 'P') + ' = ' + date);
         hour.splice(
-          hour.indexOf(String(format(new Date(element.begin), 'HH:mm'))) + 1,
-          element?.length * 2 - 1
+          1,
+          hour.indexOf(String(format(new Date(data[0].end), 'HH:mm'))) -1
         );
-        // console.log(new Date(element.begin).getHours());
-      });
-
-      // console.log(hour);
+      }
+      else if (format(new Date(data[0].begin), 'P') != date && format(new Date(data[0].end), 'P') != date) {
+        // console.log();
+        // console.log(format(new Date(data[0].begin), 'P') + ' = ' + date);
+        hour.splice(
+          1,
+          hour.length
+        );
+      } else {
+        data.forEach((element) => {
+          if (
+            element.length <=
+            hour.length -
+              hour.indexOf(String(format(new Date(element.begin), 'HH:mm'))) +
+              1
+          ) {
+            hour.splice(
+              hour.indexOf(String(format(new Date(element.begin), 'HH:mm'))) + 1,
+              element?.length * 2 - 1
+            );
+          }
+          if (
+            element.length >
+            hour.length -
+              hour.indexOf(String(format(new Date(element.begin), 'HH:mm'))) +
+              1
+          ) {
+            // console.log(element.length);
+            hour.splice(
+              hour.indexOf(String(format(new Date(element.begin), 'HH:mm'))) + 1,
+              hour.length -
+                hour.indexOf(String(format(new Date(element.begin), 'HH:mm'))) +
+                1
+            );
+            // console.log(hour.length);
+          }
+        });
+      }
+      
+      // console.log(hour.length);
     }
+    if (hour.length != 28) {
+      // console.log(hour.length);
+      // console.log(hour);
+      // console.log('');
+    }
+
     return hour;
   }
 
   filterReserv(date: any, room: any) {
-    if (this.onAuthCheck() && this.employeeData?.level <= 5) {
-      // console.log('p');
-      return this.reservApi.filter(
-        (data: any) =>
-          format(new Date(data.end), 'P') == date && data.resourceId == room
-      );
-    } else if (this.onAuthCheck()) {
-      // console.log('pp');
-      return this.reservApi.filter(
-        (data: any) =>
-          format(new Date(data.end), 'P') == date &&
-          data.resourceId == room &&
-          (data.level == 'General' ||
-            Number(data.userId) == Number(this.employeeData?.employee_code))
-      );
-    } else {
-      // console.log('pp');
-      return this.reservApi.filter(
-        (data: any) =>
-          format(new Date(data.end), 'P') == date &&
-          data.resourceId == room &&
-          data.level == 'General'
-      );
+    // if (this.onAuthCheck() && this.employeeData?.level <= 5) {
+    //   // console.log('p');
+    //   return this.reservApi.filter(
+    //     (data: any) =>
+    //       format(new Date(data.begin), 'P') == date && data.resourceId == room
+    //   );
+    // }
+    // if (this.onAuthCheck()) {
+    //   // console.log('pp');
+    //   return this.reservApi.filter(
+    //     (data: any) =>
+    //       format(new Date(data.begin), 'P') == date &&
+    //       data.resourceId == room &&
+    //       (data.level == 'General' ||
+    //         Number(data.userId) == Number(this.employeeData?.employee_code))
+    //   );
+    // } else {
+    //   // console.log('pp');
+    //   return this.reservApi.filter(
+    //     (data: any) =>
+    //       format(new Date(data.begin), 'P') == date &&
+    //       data.resourceId == room &&
+    //       data.level == 'General'
+    //   );
+    // }
+    let reserv = this.reservApi.filter(
+      (data: any) =>
+        format(new Date(data.begin), 'P') == date && data.resourceId == room
+    );
+
+    if(reserv.length == 0){
+       reserv = this.reservApi.filter(
+        (data: any) => 
+        isWithinInterval(new Date(date.slice(6,10),date.slice(3,5)-1,date.slice(0,2),6), {start:new Date(data.begin), end:new Date(data.end)})
+        && data.resourceId == room
+      )
+        
     }
+    return reserv
   }
   filterBookedWithHour(day: any, date: any, room: any, start: any) {
     // if (this.onAuthCheck() && this.employeeData?.level <= 5) {
@@ -295,19 +355,28 @@ export class ScheduleComponent implements OnInit {
     //   );
     // }
     // console.log(date + ' - ' + room + ' - ' + start + ' - ' + day);
+    // console.log(date);
+
     return this.reservApi.filter(
       (data: any) =>
-        format(new Date(data.end), 'P') == date &&
+        format(new Date(data.begin), 'P') == date &&
         data.resourceId == room &&
         format(new Date(data.begin), 'HH:mm') == start
     );
   }
-  
-  saveFilterBooked(parms:any){
-    this.filterBookedSave = this.filterBookedWithHour(parms.day,parms.date,parms.room,parms.start)
+
+  saveFilterBooked(parms: any) {
+    this.filterBookedSave = this.filterBookedWithHour(
+      parms.day,
+      parms.date,
+      parms.room,
+      parms.start
+    );
     // console.log(this.filterBookedSave);
-    
-    
+  }
+
+  formatDate(date:any){
+    return format(new Date(date), 'P')
   }
 
   loopWeekDate(date: any) {
@@ -359,7 +428,7 @@ export class ScheduleComponent implements OnInit {
     return new Date(date.setDate(diff));
   }
   async nextWeek() {
-    this.spinner.show('cahya')
+    this.spinner.show('cahya');
     await this.router.navigate([], {
       relativeTo: this.actRouter,
       queryParams: {
@@ -368,8 +437,7 @@ export class ScheduleComponent implements OnInit {
       queryParamsHandling: 'merge', // remove to replace all query params by provided
     });
     this.loopWeekDate(nextDay(new Date(this.arrayDateinWeek[6].datefull), 1));
-    await this.spinner.hide('cahya')
-    
+    await this.spinner.hide('cahya');
   }
   getEmployeeName(userId: any) {
     let emp;
@@ -378,7 +446,7 @@ export class ScheduleComponent implements OnInit {
     )[0];
   }
   previousWeek() {
-    this.spinner.show('cahya')
+    this.spinner.show('cahya');
     this.router.navigate([], {
       relativeTo: this.actRouter,
       queryParams: {
