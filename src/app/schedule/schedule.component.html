@@ -145,6 +145,14 @@
                             item
                           )[0]?.id
                         )
+                      : c == 1 ||
+                        (i == 0 &&
+                          formatDate(
+                            this.filterReserv(day.full, room.id)[0]?.begin
+                          ) != day.full &&
+                          this.filterReserv(day.full, room.id)[0]?.begin !=
+                            null)
+                      ? button(this.filterReserv(day.full, room.id)[0]?.id)
                       : onAuthCheck()
                       ? !isDateTimePast(day.datefull, item)
                         ? buttonCreate(day.localeString, item, room.id)
@@ -154,7 +162,13 @@
                   [ngClass]="
                     filterBookedSave.length != 0
                       ? 'bg-blue-300 cursor-pointer hover:bg-blue-400 transition-colors break-all '
-                      : c == 1 || (i == 0 && formatDate(this.filterReserv(day.full, room.id)[0]?.begin) != day.full && this.filterReserv(day.full, room.id)[0]?.begin != null)
+                      : c == 1 ||
+                        (i == 0 &&
+                          formatDate(
+                            this.filterReserv(day.full, room.id)[0]?.begin
+                          ) != day.full &&
+                          this.filterReserv(day.full, room.id)[0]?.begin !=
+                            null)
                       ? 'bg-blue-300 cursor-pointer hover:bg-blue-400 transition-colors break-all '
                       : isDateTimePast(day.datefull, item)
                       ? 'bg-gray-100'
@@ -162,13 +176,26 @@
                   "
                   [attr.colspan]="
                     filterBookedSave.length != 0
-                      ? filterBookedSave[0].length * 2 > ((c-1)-i) ? filterBookedSave[0].length * 2 : filterBookedSave[0].length * 2
-                      : c == 1? 28 : i == 0 && formatDate(this.filterReserv(day.full, room.id)[0]?.begin) != day.full ? (28-c+1) : 1
+                      ? filterBookedSave[0].length * 2 > c - 1 - i
+                        ? filterBookedSave[0].length * 2
+                        : filterBookedSave[0].length * 2
+                      : c == 1
+                      ? 28
+                      : i == 0 &&
+                        formatDate(
+                          this.filterReserv(day.full, room.id)[0]?.begin
+                        ) != day.full
+                      ? 28 - c + 1
+                      : 1
                   "
                   class="px-1 text-xs text-gray-800 border-2 border-gray-200 w-[2.25%]"
                 >
                   {{
-                    c == 1 || (i == 0 &&formatDate(this.filterReserv(day.full, room.id)[0]?.begin) != day.full)
+                    c == 1 ||
+                    (i == 0 &&
+                      formatDate(
+                        this.filterReserv(day.full, room.id)[0]?.begin
+                      ) != day.full)
                       ? this.filterReserv(day.full, room.id)[0]?.title
                       : filterBookedSave[0]?.title
                   }}
