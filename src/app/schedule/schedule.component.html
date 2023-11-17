@@ -18,7 +18,7 @@
       >
         <a
           (click)="previousWeek()"
-          class="inline-flex cursor-pointer shadow-md items-center px-4 max-[560px]:px-2 py-2 text-sm font-medium text-[#54086B] bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700"
+          class="inline-flex cursor-pointer shadow-md items-center px-4 max-[560px]:px-2 py-2 text-sm font-semibold text-[#54086B] bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -41,7 +41,7 @@
         </h1>
         <a
           (click)="nextWeek()"
-          class="inline-flex cursor-pointer shadow-md items-center px-4 max-[560px]:px-2 py-2 text-sm font-medium text-[#54086B] bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700"
+          class="inline-flex cursor-pointer shadow-md items-center px-4 max-[560px]:px-2 py-2 text-sm font-semibold text-[#54086B] bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -70,17 +70,19 @@
         </div>
         <div class="flex justify-center items-center">
           <div
-            class="h-4 w-4 bg-gray-100 rounded-md border border-slate-300 mx-1.5"
+            class="h-4 w-4 bg-[#E3E7F1] rounded-md border border-slate-300 mx-1.5"
           ></div>
           <h1 class="text-gray-800">Past</h1>
         </div>
         <div class="flex justify-center items-center">
           <div
-            class="h-4 w-4 bg-blue-300 rounded-md border border-slate-300 mx-1.5"
+            class="h-4 w-4 bg-[#C6CBEF] rounded-md border border-slate-300 mx-1.5"
           ></div>
           <h1 class="text-gray-800">Reserved</h1>
         </div>
       </div>
+
+      <!-- MAIN CONTENT -->
       <div class="overflow-hidden">
         <table
           *ngFor="let day of arrayDateinWeek; let la = last"
@@ -90,14 +92,14 @@
             <tr>
               <th
                 scope="col"
-                class="px-4 py-3 text-left text-xs font-medium text-gray-200 bg-gray-600 uppercase w-[10%]"
+                class="px-4 py-2.5 text-left text-sm font-bold text-gray-100 bg-[#494CA2] uppercase w-[10%] rounded"
               >
-                {{ day.dayName + ", " + day.full }}
+                {{ day.dayName + ", " + day.dateDefault }}
               </th>
               <th
                 *ngFor="let hour of hours"
                 scope="col"
-                class="text-left text-xs font-medium text-gray-500 border uppercase w-[4.5%]"
+                class="text-center text-sm font-bold text-gray-50 bg-[#8186D5] border uppercase w-[4.5%] rounded-r px-1"
                 colspan="2"
               >
                 {{ hour }}.00
@@ -110,11 +112,23 @@
               class="hover:bg-gray-50"
             >
               <td
-                class="p-2 whitespace-nowrap text-sm font-medium text-gray-800"
+                *ngIf="
+                  !room.roomName.includes('1st VIP') &&
+                  !room.roomName.includes('One For All')
+                "
+                
+                class="p-2 whitespace-nowrap text-sm font-semibold text-[#494CA2] bg-fuchsia-50 rounded-r"
               >
-                {{
-                  room.roomName
-                }}
+                {{ room.roomName }}
+              </td>
+              <td
+                *ngIf="
+                  room.roomName.includes('1st VIP') ||
+                  room.roomName.includes('One For All')
+                "
+                class="p-2 whitespace-nowrap text-sm font-bold text-[#494CA2] bg-violet-50 rounded-r"
+              >
+                {{ room.roomName }}
               </td>
               <ng-container
                 *ngFor="
@@ -160,7 +174,7 @@
                   "
                   [ngClass]="
                     filterBookedSave.length != 0
-                      ? 'bg-blue-300 cursor-pointer hover:bg-blue-400 transition-colors break-all '
+                      ? 'bg-[#C6CBEF] cursor-pointer hover:bg-[#abafcf] rounded-md transition-colors break-all '
                       : c == 1 ||
                         (i == 0 &&
                           formatDate(
@@ -168,10 +182,10 @@
                           ) != day.full &&
                           this.filterReserv(day.full, room.id)[0]?.begin !=
                             null)
-                      ? 'bg-blue-300 cursor-pointer hover:bg-blue-400 transition-colors break-all '
+                      ? 'bg-[#C6CBEF] cursor-pointer hover:bg-[#abafcf] rounded-md transition-colors break-all '
                       : isDateTimePast(day.datefull, item)
-                      ? 'bg-gray-100'
-                      : 'hover:bg-blue-50 cursor-pointer'
+                      ? 'bg-[#E3E7F1] border-white'
+                      : 'hover:bg-blue-50 cursor-pointer bg-white'
                   "
                   [attr.colspan]="
                     filterBookedSave.length != 0
@@ -187,17 +201,20 @@
                       ? 28 - c + 1
                       : 1
                   "
-                  class="px-1 text-xs text-gray-800 border-2 border-gray-200 w-[2.25%]"
+                  class="px-1 text-xs text-gray-800 font-bold border-2  border-gray-200 w-[2.25%] overflow-x-auto"
                 >
-                  {{
-                    c == 1 ||
-                    (i == 0 &&
-                      formatDate(
-                        this.filterReserv(day.full, room.id)[0]?.begin
-                      ) != day.full)
-                      ? this.filterReserv(day.full, room.id)[0]?.title
-                      : filterBookedSave[0]?.title
-                  }}
+                  <h1 class="h-fit">
+                    {{  
+                      c == 1 ||
+                      (i == 0 &&
+                        formatDate(
+                          this.filterReserv(day.full, room.id)[0]?.begin
+                        ) != day.full)
+                        ? this.filterReserv(day.full, room.id)[0]?.title
+                        : filterBookedSave[0]?.title
+                    }}
+                  </h1>
+
                   <!-- {{ item }} -->
                 </td>
               </ng-container>
@@ -211,7 +228,7 @@
       >
         <a
           (click)="previousWeek()"
-          class="inline-flex cursor-pointer shadow-md items-center px-4 max-[560px]:px-2 py-2 text-sm font-medium text-[#54086B] bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700"
+          class="inline-flex cursor-pointer shadow-md items-center px-4 max-[560px]:px-2 py-2 text-sm font-semibold text-[#54086B] bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -234,7 +251,7 @@
         </h1>
         <a
           (click)="nextWeek()"
-          class="inline-flex cursor-pointer shadow-md items-center px-4 max-[560px]:px-2 py-2 text-sm font-medium text-[#54086B] bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700"
+          class="inline-flex cursor-pointer shadow-md items-center px-4 max-[560px]:px-2 py-2 text-sm font-semibold text-[#54086B] bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

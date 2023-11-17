@@ -126,7 +126,7 @@ export class ScheduleComponent implements OnInit {
         this.reservApi = reserv;
         this.resourcesApi = resources;
         this.employeesKejayan = employeeKejayan;
-        // console.log(this.getEmployeeName(18180));
+        console.log(this.resourcesApi);
 
         this.spinner.hide('cahya');
       },
@@ -398,6 +398,7 @@ export class ScheduleComponent implements OnInit {
         month: firstDay.getMonth(),
         dayName: firstDay.toLocaleString('en-us', { weekday: 'long' }),
         full: format(firstDay, 'P'),
+        dateDefault: format(firstDay, 'PP'),
         localeString: format(firstDay, 'yyyy-MM-dd'),
         datefull: format(firstDay, 'MM-dd-yyyy'),
       });
