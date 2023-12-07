@@ -60,6 +60,8 @@ export class NavbarComponent {
   }
   userDropdown(){
     this.userBool = !this.userBool
+    console.log(this.userBool);
+    
   }
 
   signOut() {

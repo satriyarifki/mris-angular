@@ -1,7 +1,10 @@
 <nav class="relative bg-white shadow-lg">
   <div class="container px-6 py-2 mx-auto">
     <div class="flex items-center justify-between">
-      <a href="#" class="text-xl font-semibold"> MRIS </a>
+      <a href="#" class="text-xl font-extrabold font-manrope"> 
+        <h1>MRIS</h1>
+        <h1 class="text-sm font-semibold">Meeting Reservation Information System</h1>
+      </a>
 
       <!-- Mobile Menu open: "block", Menu closed: "hidden" -->
       <div
@@ -51,7 +54,7 @@
             </svg>
           </button> -->
           <a
-            href="http://192.168.9.47/meetcalendar/"
+            href="http://192.168.9.47/aio-meet/"
             routerLinkActive="router-link-active"
             class="relative cursor-pointer inline-flex mx-4 items-center justify-start px-5 max-[560px]:px-3 text-sm py-1.5 overflow-hidden font-medium transition-all bg-[#f6b26e] rounded-md hover:bg-white group"
           >
@@ -103,7 +106,7 @@
             <span>Log Out</span>
           </button> -->
 
-          <div class="drop-shadow-md" *ngIf="!onAuthCheck()">
+          <div  *ngIf="!onAuthCheck()">
             <div class="w-full flex justify-end">
               <a
                 (click)="userDropdown()"
@@ -123,24 +126,18 @@
             </div>
 
             <div
-              [ngClass]="!userBool ? 'hidden' : 'true'"
-              class="fixed transition-[opacity,margin] duration-[0.1ms] sm:duration-[10ms] sm:w-48 z-10 bg-white sm:shadow-md rounded-lg p-2 dark:bg-gray-800 sm:dark:border dark:border-gray-700 dark:divide-gray-700 right-0"
+              [ngClass]="!userBool ? 'hidden' : ''"
+              class="fixed sm:w-48 z-10 bg-white sm:shadow-md rounded-lg p-2  right-0"
             >
               <a
-                class="flex items-center gap-x-3.5 py-2 px-3 rounded-md text-sm text-blue-600 focus:ring-2 focus:ring-blue-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300"
+                class="flex items-center gap-x-3.5 py-2 px-3 rounded-md text-sm text-blue-600 focus:ring-2 focus:ring-blue-500 "
                 >{{ this.authService.getUser().lg_name }} ({{
                   this.authService.getUser().lg_nik
                 }})
               </a>
               <hr class="py-0.5" />
-              <!-- <a
-                class="flex items-center gap-x-3.5 py-2 px-3 rounded-md text-sm text-gray-800 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300"
-                href="#"
-              >
-                Downloads
-              </a> -->
               <a
-                class="flex items-center gap-x-3.5 py-2 px-3 cursor-pointer rounded-md text-sm text-red-500 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300"
+                class="flex items-center gap-x-3.5 py-2 px-3 cursor-pointer rounded-md text-sm text-red-500 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 "
                 (click)="signOut()"
               >
                 <svg
@@ -158,26 +155,6 @@
               </a>
             </div>
           </div>
-
-          <!-- <button
-            type="button"
-            class="flex items-center focus:outline-none"
-            aria-label="toggle profile dropdown"
-          >
-            <div
-              class="w-8 h-8 overflow-hidden border-2 border-gray-400 rounded-full"
-            >
-              <img
-                src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80"
-                class="object-cover w-full h-full"
-                alt="avatar"
-              />
-            </div>
-
-            <h3 class="mx-2 text-gray-700  lg:hidden">
-              Khatab wedaa
-            </h3>
-          </button> -->
         </div>
       </div>
     </div>

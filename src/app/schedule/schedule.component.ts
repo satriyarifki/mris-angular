@@ -19,6 +19,7 @@ import {
   isBefore,
   isWithinInterval,
 } from 'date-fns';
+import { enUS, enIN } from 'date-fns/locale'
 import { NgxSpinnerService } from 'ngx-spinner';
 import { forkJoin } from 'rxjs';
 import { ApiService } from '../services/api.service';
@@ -126,7 +127,7 @@ export class ScheduleComponent implements OnInit {
         this.reservApi = reserv;
         this.resourcesApi = resources;
         this.employeesKejayan = employeeKejayan;
-        console.log(this.resourcesApi);
+        // console.log(this.resourcesApi);
 
         this.spinner.hide('cahya');
       },
@@ -227,17 +228,12 @@ export class ScheduleComponent implements OnInit {
       //   hour.splice(hour.indexOf(element.start) + 1, element.longHours * 2 - 1);
       // });
       if (format(new Date(data[0].begin), 'P') != date && format(new Date(data[0].end), 'P') == date) {
-        // console.log(hour.indexOf(String(format(new Date(data[0].end), 'HH:mm'))));
-        
-        // console.log(format(new Date(data[0].begin), 'P') + ' = ' + date);
         hour.splice(
           1,
           hour.indexOf(String(format(new Date(data[0].end), 'HH:mm'))) -1
         );
       }
       else if (format(new Date(data[0].begin), 'P') != date && format(new Date(data[0].end), 'P') != date) {
-        // console.log();
-        // console.log(format(new Date(data[0].begin), 'P') + ' = ' + date);
         hour.splice(
           1,
           hour.length
@@ -398,11 +394,12 @@ export class ScheduleComponent implements OnInit {
         month: firstDay.getMonth(),
         dayName: firstDay.toLocaleString('en-us', { weekday: 'long' }),
         full: format(firstDay, 'P'),
-        dateDefault: format(firstDay, 'PP'),
+        dateDefault: format(firstDay, 'PP', {locale: enIN}),
         localeString: format(firstDay, 'yyyy-MM-dd'),
         datefull: format(firstDay, 'MM-dd-yyyy'),
       });
-
+      // console.log(format(firstDay, 'PPP'));
+      
       firstDay.setDate(firstDay.getDate() + 1);
     }
   }

@@ -17,7 +17,7 @@ const USER_DATA_KEY = 'auth-user-data';
   providedIn: 'root',
 })
 export class AuthService {
-  datas:any
+  datas: any;
   private authUrl = baseApi + 'auth/';
   constructor(private http: HttpClient, private router: Router) {}
   setCookie(cValue: string, expDays: number) {
@@ -53,39 +53,42 @@ export class AuthService {
 
   signOut(): void {
     window.localStorage.clear();
-    this.deleteCookie()
+    this.deleteCookie();
     // window.location.reload();
     this.router.navigate(['/']);
   }
 
   public saveToken(token: string): void {
     window.localStorage.removeItem(TOKEN_KEY);
-    this.setCookie(token,1)
+    this.setCookie(token, 1);
     window.localStorage.setItem(TOKEN_KEY, token);
   }
 
   public getToken(): string | null {
     // return window.localStorage.getItem(TOKEN_KEY);
-    return this.getCookie()!
+    return this.getCookie()!;
   }
 
   public saveUser(user: any): void {
     window.localStorage.removeItem(USER_KEY);
     window.localStorage.removeItem(USER_DATA_KEY);
-    window.localStorage.setItem(USER_KEY, JSON.stringify(user));
-    this.employeesGetById(this.getUser().lg_nik).subscribe((data) => {
-      console.log(data);
-      
-      window.localStorage.setItem(USER_DATA_KEY, JSON.stringify(data[0]));
-    },(err)=>{console.log(err);
-    });
-    
+    window.localStorage.setItem(USER_KEY, JSON.stringify(user[0]));
+    this.employeesGetById(this.getUser().lg_nik).subscribe(
+      (data) => {
+        // console.log(data);
+
+        window.localStorage.setItem(USER_DATA_KEY, JSON.stringify(data[0]));
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
   }
 
   public getUser(): any {
     const user = window.localStorage.getItem(USER_KEY);
     if (user) {
-      return JSON.parse(user)[0];
+      return JSON.parse(user);
     }
 
     return {};
@@ -93,7 +96,7 @@ export class AuthService {
   public getUserData(): any {
     const user = window.localStorage.getItem(USER_DATA_KEY);
     // console.log(user);
-    
+
     if (user) {
       return JSON.parse(user);
     }
