@@ -116,7 +116,6 @@
                   !room.roomName.includes('1st VIP') &&
                   !room.roomName.includes('One For All')
                 "
-                
                 class="p-2 whitespace-nowrap text-sm font-semibold text-[#494CA2] bg-fuchsia-50 rounded-r"
               >
                 {{ room.roomName }}
@@ -146,13 +145,18 @@
                     start: item
                   })
                 }}
-                
+
                 <td
                   (click)="
-                  filterBookedSave
+                    filterBookedWithHour(day.dayName, day.full, room.id, item)
                       .length != 0
                       ? button(
-                        filterBookedSave[0]?.id
+                          filterBookedWithHour(
+                            day.dayName,
+                            day.full,
+                            room.id,
+                            item
+                          )[0]?.id
                         )
                       : c == 1 ||
                         (i == 0 &&
@@ -197,10 +201,10 @@
                       ? 28 - c + 1
                       : 1
                   "
-                  class="px-1 text-xs text-gray-800 font-bold border-2  border-gray-200 w-[2.25%] overflow-x-auto"
+                  class="px-1 text-xs text-gray-800 font-bold border-2 border-gray-200 w-[2.25%] overflow-x-auto"
                 >
                   <h1 class="h-fit">
-                    {{  
+                    {{
                       c == 1 ||
                       (i == 0 &&
                         formatDate(

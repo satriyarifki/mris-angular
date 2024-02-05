@@ -464,6 +464,8 @@ export class ScheduleComponent implements OnInit {
     this.spinner.hide('cahya');
   }
   button(id: any) {
+    console.log(id);
+    
     this.router.navigate(['/view-reservation/', id]);
   }
   buttonCreate(date: any, time: any, room: any) {
