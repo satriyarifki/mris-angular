@@ -146,17 +146,13 @@
                     start: item
                   })
                 }}
+                
                 <td
                   (click)="
-                    filterBookedWithHour(day.dayName, day.full, room.id, item)
+                  filterBookedSave
                       .length != 0
                       ? button(
-                          filterBookedWithHour(
-                            day.dayName,
-                            day.full,
-                            room.id,
-                            item
-                          )[0]?.id
+                        filterBookedSave[0]?.id
                         )
                       : c == 1 ||
                         (i == 0 &&

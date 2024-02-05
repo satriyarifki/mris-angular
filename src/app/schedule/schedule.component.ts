@@ -102,6 +102,7 @@ export class ScheduleComponent implements OnInit {
   employeeData: any;
   employeesKejayan: any;
   filterBookedSave: any;
+  filterReservSave: any;
 
   // Variable
   total: number = 0;
@@ -317,8 +318,9 @@ export class ScheduleComponent implements OnInit {
         isWithinInterval(new Date(date.slice(6,10),date.slice(3,5)-1,date.slice(0,2),6), {start:new Date(data.begin), end:new Date(data.end)})
         && data.resourceId == room
       )
-        
     }
+    // console.log(reserv);
+    
     return reserv
   }
   filterBookedWithHour(day: any, date: any, room: any, start: any) {
@@ -368,6 +370,10 @@ export class ScheduleComponent implements OnInit {
       parms.room,
       parms.start
     );
+    // console.log(this.filterBookedSave);
+  }
+  saveFilterReserv(date: any,room:any) {
+    this.filterReservSave = this.filterReserv(date,room)
     // console.log(this.filterBookedSave);
   }
 

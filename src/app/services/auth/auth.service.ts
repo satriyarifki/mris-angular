@@ -72,12 +72,12 @@ export class AuthService {
   public saveUser(user: any): void {
     window.localStorage.removeItem(USER_KEY);
     window.localStorage.removeItem(USER_DATA_KEY);
-    window.localStorage.setItem(USER_KEY, JSON.stringify(user[0]));
+    window.localStorage.setItem(USER_KEY, JSON.stringify(user));
     this.employeesGetById(this.getUser().lg_nik).subscribe(
       (data) => {
         // console.log(data);
 
-        window.localStorage.setItem(USER_DATA_KEY, JSON.stringify(data[0]));
+        window.localStorage.setItem(USER_DATA_KEY, JSON.stringify(data));
       },
       (err) => {
         console.log(err);
