@@ -432,7 +432,9 @@ export class ScheduleComponent implements OnInit {
     return new Date(date.setDate(diff));
   }
   async nextWeek() {
+    
     this.spinner.show('cahya');
+    console.log('start');
     await this.router.navigate([], {
       relativeTo: this.actRouter,
       queryParams: {
@@ -442,6 +444,7 @@ export class ScheduleComponent implements OnInit {
     });
     this.loopWeekDate(nextDay(new Date(this.arrayDateinWeek[6].datefull), 1));
     await this.spinner.hide('cahya');
+    console.log('stop');
   }
   getEmployeeName(userId: any) {
     let emp;
